@@ -52,7 +52,7 @@ export class OnePanelClient {
   async getContainerLogs(id: string, tail = 100): Promise<any> { return this.request(`/api/v2/containers/${id}/logs?tail=${tail}`); }
 
   // Images
-  async listImages(): Promise<any> { return this.request("/api/v2/containers/image/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100, orderBy: "name", order: "ascending" }) }); }
+  async listImages(): Promise<any> { return this.request("/api/v2/containers/image"); }
   async pullImage(name: string): Promise<any> { return this.request("/api/v2/containers/image/pull", { method: "POST", body: JSON.stringify({ name }) }); }
   async removeImage(id: string): Promise<any> { return this.request("/api/v2/containers/image/del", { method: "POST", body: JSON.stringify({ id }) }); }
 
