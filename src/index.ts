@@ -9,7 +9,6 @@ const config: Config = {
   port: parseInt(process.env.ONEPANEL_PORT || "8080"),
   apiKey: process.env.ONEPANEL_API_KEY || "",
   protocol: process.env.ONEPANEL_PROTOCOL || "http",
-  entrance: process.env.ONEPANEL_ENTRANCE || "",
 };
 
 if (!config.apiKey) {
