@@ -18,15 +18,39 @@ const server = new Server({ name: "1panel-mcp", version: "1.0.0" }, { capabiliti
 const tools = [
     // Containers
     { name: "list_containers", description: "List Docker containers", inputSchema: { type: "object", properties: {} } },
+    { name: "list_containers_simple", description: "List containers (simple)", inputSchema: { type: "object", properties: {} } },
+    { name: "get_container", description: "Get container info", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
+    { name: "inspect_container", description: "Inspect container", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
     { name: "start_container", description: "Start container", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
     { name: "stop_container", description: "Stop container", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
     { name: "restart_container", description: "Restart container", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
+    { name: "pause_container", description: "Pause container", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
+    { name: "unpause_container", description: "Unpause container", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
+    { name: "kill_container", description: "Kill container", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
     { name: "remove_container", description: "Remove container", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
+    { name: "create_container", description: "Create container", inputSchema: { type: "object", properties: { config: { type: "object" } }, required: ["config"] } },
+    { name: "update_container", description: "Update container", inputSchema: { type: "object", properties: { id: { type: "string" }, config: { type: "object" } }, required: ["id", "config"] } },
+    { name: "rename_container", description: "Rename container", inputSchema: { type: "object", properties: { id: { type: "string" }, name: { type: "string" } }, required: ["id", "name"] } },
+    { name: "upgrade_container", description: "Upgrade container", inputSchema: { type: "object", properties: { id: { type: "string" }, image: { type: "string" } }, required: ["id", "image"] } },
     { name: "get_container_logs", description: "Get container logs", inputSchema: { type: "object", properties: { id: { type: "string" }, tail: { type: "number" } }, required: ["id"] } },
+    { name: "get_container_stats", description: "Get container stats", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
+    { name: "get_container_status", description: "Get containers status", inputSchema: { type: "object", properties: {} } },
+    { name: "prune_containers", description: "Prune containers", inputSchema: { type: "object", properties: {} } },
+    { name: "clean_container_log", description: "Clean container log", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
+    { name: "get_container_users", description: "Get container users", inputSchema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] } },
+    { name: "list_containers_by_image", description: "List containers by image", inputSchema: { type: "object", properties: { image: { type: "string" } }, required: ["image"] } },
+    { name: "commit_container", description: "Commit container", inputSchema: { type: "object", properties: { id: { type: "string" }, repo: { type: "string" }, tag: { type: "string" } }, required: ["id", "repo", "tag"] } },
     // Images
     { name: "list_images", description: "List Docker images", inputSchema: { type: "object", properties: {} } },
+    { name: "list_all_images", description: "List all Docker images", inputSchema: { type: "object", properties: {} } },
+    { name: "search_images", description: "Search images", inputSchema: { type: "object", properties: {} } },
     { name: "pull_image", description: "Pull image", inputSchema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] } },
+    { name: "push_image", description: "Push image", inputSchema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] } },
     { name: "remove_image", description: "Remove image", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } },
+    { name: "build_image", description: "Build image", inputSchema: { type: "object", properties: { dockerfile: { type: "string" }, name: { type: "string" }, path: { type: "string" } }, required: ["dockerfile", "name", "path"] } },
+    { name: "tag_image", description: "Tag image", inputSchema: { type: "object", properties: { id: { type: "string" }, repo: { type: "string" }, tag: { type: "string" } }, required: ["id", "repo", "tag"] } },
+    { name: "save_image", description: "Save image", inputSchema: { type: "object", properties: { names: { type: "array", items: { type: "string" } } }, required: ["names"] } },
+    { name: "load_image", description: "Load image", inputSchema: { type: "object", properties: { path: { type: "string" } }, required: ["path"] } },
     // Networks
     { name: "list_networks", description: "List networks", inputSchema: { type: "object", properties: {} } },
     { name: "create_network", description: "Create network", inputSchema: { type: "object", properties: { name: { type: "string" }, driver: { type: "string" } }, required: ["name"] } },
@@ -42,6 +66,10 @@ const tools = [
     { name: "start_compose", description: "Start compose", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
     { name: "stop_compose", description: "Stop compose", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
     { name: "restart_compose", description: "Restart compose", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
+    { name: "update_compose", description: "Update compose", inputSchema: { type: "object", properties: { id: { type: "number" }, content: { type: "string" } }, required: ["id", "content"] } },
+    { name: "test_compose", description: "Test compose", inputSchema: { type: "object", properties: { content: { type: "string" } }, required: ["content"] } },
+    { name: "get_compose_env", description: "Get compose environment", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
+    { name: "clean_compose_log", description: "Clean compose log", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
     // Apps
     { name: "list_installed_apps", description: "List installed apps", inputSchema: { type: "object", properties: {} } },
     { name: "list_app_store", description: "List app store", inputSchema: { type: "object", properties: {} } },
@@ -111,6 +139,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             case "list_containers":
                 result = await client.listContainers();
                 break;
+            case "list_containers_simple":
+                result = await client.listContainersSimple();
+                break;
+            case "get_container":
+                result = await client.getContainer(args?.id);
+                break;
+            case "inspect_container":
+                result = await client.inspectContainer(args?.id);
+                break;
             case "start_container":
                 result = await client.startContainer(args?.id);
                 break;
@@ -120,21 +157,84 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             case "restart_container":
                 result = await client.restartContainer(args?.id);
                 break;
+            case "pause_container":
+                result = await client.pauseContainer(args?.id);
+                break;
+            case "unpause_container":
+                result = await client.unpauseContainer(args?.id);
+                break;
+            case "kill_container":
+                result = await client.killContainer(args?.id);
+                break;
             case "remove_container":
                 result = await client.removeContainer(args?.id);
                 break;
+            case "create_container":
+                result = await client.createContainer(args?.config);
+                break;
+            case "update_container":
+                result = await client.updateContainer(args?.id, args?.config);
+                break;
+            case "rename_container":
+                result = await client.renameContainer(args?.id, args?.name);
+                break;
+            case "upgrade_container":
+                result = await client.upgradeContainer(args?.id, args?.image);
+                break;
             case "get_container_logs":
                 result = await client.getContainerLogs(args?.id, args?.tail);
+                break;
+            case "get_container_stats":
+                result = await client.getContainerStats(args?.id);
+                break;
+            case "get_container_status":
+                result = await client.getContainerStatus();
+                break;
+            case "prune_containers":
+                result = await client.pruneContainers();
+                break;
+            case "clean_container_log":
+                result = await client.cleanContainerLog(args?.id);
+                break;
+            case "get_container_users":
+                result = await client.getContainerUsers(args?.name);
+                break;
+            case "list_containers_by_image":
+                result = await client.listContainersByImage(args?.image);
+                break;
+            case "commit_container":
+                result = await client.commitContainer(args?.id, args?.repo, args?.tag);
                 break;
             // Images
             case "list_images":
                 result = await client.listImages();
                 break;
+            case "list_all_images":
+                result = await client.listAllImages();
+                break;
+            case "search_images":
+                result = await client.searchImages();
+                break;
             case "pull_image":
                 result = await client.pullImage(args?.name);
                 break;
+            case "push_image":
+                result = await client.pushImage(args?.name);
+                break;
             case "remove_image":
                 result = await client.removeImage(args?.id);
+                break;
+            case "build_image":
+                result = await client.buildImage(args?.dockerfile, args?.name, args?.path);
+                break;
+            case "tag_image":
+                result = await client.tagImage(args?.id, args?.repo, args?.tag);
+                break;
+            case "save_image":
+                result = await client.saveImage(args?.names);
+                break;
+            case "load_image":
+                result = await client.loadImage(args?.path);
                 break;
             // Networks
             case "list_networks":
@@ -174,6 +274,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 break;
             case "restart_compose":
                 result = await client.restartCompose(args?.id);
+                break;
+            case "update_compose":
+                result = await client.updateCompose(args?.id, args?.content);
+                break;
+            case "test_compose":
+                result = await client.testCompose(args?.content);
+                break;
+            case "get_compose_env":
+                result = await client.getComposeEnv(args?.id);
+                break;
+            case "clean_compose_log":
+                result = await client.cleanComposeLog(args?.id);
                 break;
             // Apps
             case "list_installed_apps":

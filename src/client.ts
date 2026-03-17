@@ -45,16 +45,40 @@ export class OnePanelClient {
 
   // Containers
   async listContainers(): Promise<any> { return this.request("/api/v2/containers/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100, state: "all", orderBy: "name", order: "ascending" }) }); }
+  async listContainersSimple(): Promise<any> { return this.request("/api/v2/containers/list", { method: "POST", body: JSON.stringify({}) }); }
+  async getContainer(id: string): Promise<any> { return this.request("/api/v2/containers/info", { method: "POST", body: JSON.stringify({ id }) }); }
+  async inspectContainer(id: string): Promise<any> { return this.request("/api/v2/containers/inspect", { method: "POST", body: JSON.stringify({ id }) }); }
   async startContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "start" }) }); }
   async stopContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "stop" }) }); }
   async restartContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "restart" }) }); }
+  async pauseContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "pause" }) }); }
+  async unpauseContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "unpause" }) }); }
+  async killContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "kill" }) }); }
   async removeContainer(id: string): Promise<any> { return this.request("/api/v2/containers/del", { method: "POST", body: JSON.stringify({ id }) }); }
-  async getContainerLogs(id: string, tail = 100): Promise<any> { return this.request(`/api/v2/containers/${id}/logs?tail=${tail}`); }
+  async createContainer(config: any): Promise<any> { return this.request("/api/v2/containers", { method: "POST", body: JSON.stringify(config) }); }
+  async updateContainer(id: string, config: any): Promise<any> { return this.request("/api/v2/containers/update", { method: "POST", body: JSON.stringify({ id, ...config }) }); }
+  async renameContainer(id: string, name: string): Promise<any> { return this.request("/api/v2/containers/rename", { method: "POST", body: JSON.stringify({ id, name }) }); }
+  async upgradeContainer(id: string, image: string): Promise<any> { return this.request("/api/v2/containers/upgrade", { method: "POST", body: JSON.stringify({ id, image }) }); }
+  async getContainerLogs(id: string, tail = 100): Promise<any> { return this.request("/api/v2/containers/search/log", { method: "GET" }); }
+  async getContainerStats(id: string): Promise<any> { return this.request(`/api/v2/containers/stats/${id}`, { method: "GET" }); }
+  async getContainerStatus(): Promise<any> { return this.request("/api/v2/containers/status", { method: "GET" }); }
+  async pruneContainers(): Promise<any> { return this.request("/api/v2/containers/prune", { method: "POST", body: JSON.stringify({}) }); }
+  async cleanContainerLog(id: string): Promise<any> { return this.request("/api/v2/containers/clean/log", { method: "POST", body: JSON.stringify({ id }) }); }
+  async getContainerUsers(name: string): Promise<any> { return this.request("/api/v2/containers/users", { method: "POST", body: JSON.stringify({ name }) }); }
+  async listContainersByImage(image: string): Promise<any> { return this.request("/api/v2/containers/list/byimage", { method: "POST", body: JSON.stringify({ name: image }) }); }
+  async commitContainer(id: string, repo: string, tag: string): Promise<any> { return this.request("/api/v2/containers/commit", { method: "POST", body: JSON.stringify({ id, repo, tag }) }); }
 
   // Images
   async listImages(): Promise<any> { return this.request("/api/v2/containers/image"); }
+  async listAllImages(): Promise<any> { return this.request("/api/v2/containers/image/all"); }
+  async searchImages(): Promise<any> { return this.request("/api/v2/containers/image/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100, orderBy: "name", order: "ascending" }) }); }
   async pullImage(name: string): Promise<any> { return this.request("/api/v2/containers/image/pull", { method: "POST", body: JSON.stringify({ name }) }); }
-  async removeImage(id: string): Promise<any> { return this.request("/api/v2/containers/image/del", { method: "POST", body: JSON.stringify({ id }) }); }
+  async pushImage(name: string): Promise<any> { return this.request("/api/v2/containers/image/push", { method: "POST", body: JSON.stringify({ name }) }); }
+  async removeImage(id: string): Promise<any> { return this.request("/api/v2/containers/image/remove", { method: "POST", body: JSON.stringify({ id }) }); }
+  async buildImage(dockerfile: string, name: string, path: string): Promise<any> { return this.request("/api/v2/containers/image/build", { method: "POST", body: JSON.stringify({ dockerfile, name, path }) }); }
+  async tagImage(id: string, repo: string, tag: string): Promise<any> { return this.request("/api/v2/containers/image/tag", { method: "POST", body: JSON.stringify({ id, repo, tag }) }); }
+  async saveImage(names: string[]): Promise<any> { return this.request("/api/v2/containers/image/save", { method: "POST", body: JSON.stringify({ names }) }); }
+  async loadImage(path: string): Promise<any> { return this.request("/api/v2/containers/image/load", { method: "POST", body: JSON.stringify({ path }) }); }
 
   // Networks
   async listNetworks(): Promise<any> { return this.request("/api/v2/containers/network/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
@@ -73,6 +97,10 @@ export class OnePanelClient {
   async startCompose(id: number): Promise<any> { return this.request("/api/v2/containers/compose/operate", { method: "POST", body: JSON.stringify({ id, operation: "start" }) }); }
   async stopCompose(id: number): Promise<any> { return this.request("/api/v2/containers/compose/operate", { method: "POST", body: JSON.stringify({ id, operation: "stop" }) }); }
   async restartCompose(id: number): Promise<any> { return this.request("/api/v2/containers/compose/operate", { method: "POST", body: JSON.stringify({ id, operation: "restart" }) }); }
+  async updateCompose(id: number, content: string): Promise<any> { return this.request("/api/v2/containers/compose/update", { method: "POST", body: JSON.stringify({ id, content }) }); }
+  async testCompose(content: string): Promise<any> { return this.request("/api/v2/containers/compose/test", { method: "POST", body: JSON.stringify({ content }) }); }
+  async getComposeEnv(id: number): Promise<any> { return this.request("/api/v2/containers/compose/env", { method: "POST", body: JSON.stringify({ id }) }); }
+  async cleanComposeLog(id: number): Promise<any> { return this.request("/api/v2/containers/compose/clean/log", { method: "POST", body: JSON.stringify({ id }) }); }
 
   // Apps
   async listInstalledApps(): Promise<any> { return this.request("/api/v2/apps/installed/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
