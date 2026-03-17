@@ -24,7 +24,7 @@ export class OnePanelClient {
 
   private async request(path: string, options: RequestInit = {}): Promise<any> {
     const { token, timestamp } = this.generateToken();
-    const url = `${this.config.protocol}://${this.config.host}:${this.config.port}${path}`;
+    const url = `${this.config.protocol}://${this.config.host}:${this.config.port}/1panel${path}`;
 
     const response = await fetch(url, {
       ...options,
