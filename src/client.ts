@@ -5,13 +5,14 @@ export interface Config {
   port: number;
   apiKey: string;
   protocol?: string;
+  entrance?: string;
 }
 
 export class OnePanelClient {
   private config: Config;
 
   constructor(config: Config) {
-    this.config = { protocol: "http", ...config };
+    this.config = { protocol: "http", entrance: "", ...config };
   }
 
   private generateToken(): { token: string; timestamp: string } {
@@ -24,7 +25,8 @@ export class OnePanelClient {
 
   private async request(path: string, options: RequestInit = {}): Promise<any> {
     const { token, timestamp } = this.generateToken();
-    const url = `${this.config.protocol}://${this.config.host}:${this.config.port}/1panel${path}`;
+    const entrance = this.config.entrance ? `/${this.config.entrance}` : "";
+    const url = `${this.config.protocol}://${this.config.host}:${this.config.port}${entrance}${path}`;
 
     const response = await fetch(url, {
       ...options,

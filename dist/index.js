@@ -8,6 +8,7 @@ const config = {
     port: parseInt(process.env.ONEPANEL_PORT || "8080"),
     apiKey: process.env.ONEPANEL_API_KEY || "",
     protocol: process.env.ONEPANEL_PROTOCOL || "http",
+    entrance: process.env.ONEPANEL_ENTRANCE || "",
 };
 if (!config.apiKey) {
     console.error("Error: ONEPANEL_API_KEY required");
