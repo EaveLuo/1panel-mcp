@@ -1,147 +1,192 @@
-# 1Panel API 覆盖检查
+# 1Panel MCP API 覆盖检查
 
-## 当前已实现的功能 (15个工具)
-
-### 容器管理
-- ✅ list_containers - 列出容器
-- ✅ start_container - 启动容器
-- ✅ stop_container - 停止容器
-- ✅ restart_container - 重启容器
-
-### 镜像管理
-- ✅ list_images - 列出镜像
-- ✅ pull_image - 拉取镜像
-
-### 应用管理
-- ✅ list_installed_apps - 列出已安装应用
-- ✅ list_app_store - 列出应用商店
-
-### 文件管理
-- ✅ list_files - 列出文件
-
-### 系统监控
-- ✅ get_system_info - 获取系统信息
-- ✅ get_system_monitor - 获取系统监控数据
-
-### 网站管理
-- ✅ list_websites - 列出网站
-- ✅ list_certificates - 列出SSL证书
-
-### 数据库管理
-- ✅ list_databases - 列出数据库 (mysql/postgresql/redis)
-
-### Docker Compose
-- ✅ list_composes - 列出Compose项目
+## 统计
+- **已实现**: 49 个工具
+- **1Panel 功能模块**: 16 个主要模块
 
 ---
 
-## 缺失的主要功能模块
+## 已完整实现的功能模块 ✅
 
-根据 1Panel 文档，以下功能尚未实现：
+### 1. 容器管理 (6/8)
+| 工具 | 状态 |
+|------|------|
+| list_containers | ✅ |
+| start_container | ✅ |
+| stop_container | ✅ |
+| restart_container | ✅ |
+| remove_container | ✅ |
+| get_container_logs | ✅ |
+| ~~get_container_details~~ | ⏭️ |
+| ~~exec_container~~ | ⏭️ |
 
-### 1. 容器管理 (补充)
-- ❌ 删除容器
-- ❌ 查看容器日志
-- ❌ 进入容器终端
-- ❌ 查看容器详情
-- ❌ 容器网络管理
-- ❌ 容器存储卷管理
+### 2. 镜像管理 (3/5)
+| 工具 | 状态 |
+|------|------|
+| list_images | ✅ |
+| pull_image | ✅ |
+| remove_image | ✅ |
+| ~~export_image~~ | ⏭️ |
+| ~~import_image~~ | ⏭️ |
 
-### 2. 镜像管理 (补充)
-- ❌ 删除镜像
-- ❌ 导出/导入镜像
-- ❌ 查看镜像详情
+### 3. 网络管理 (3/3) ✅
+| 工具 | 状态 |
+|------|------|
+| list_networks | ✅ |
+| create_network | ✅ |
+| remove_network | ✅ |
 
-### 3. 应用管理 (补充)
-- ❌ 安装应用
-- ❌ 卸载应用
-- ❌ 更新应用
-- ❌ 查看应用详情
-- ❌ 应用备份/恢复
+### 4. 存储卷管理 (3/3) ✅
+| 工具 | 状态 |
+|------|------|
+| list_volumes | ✅ |
+| create_volume | ✅ |
+| remove_volume | ✅ |
 
-### 4. 文件管理 (补充)
-- ❌ 上传文件
-- ❌ 下载文件
-- ❌ 删除文件
-- ❌ 重命名文件
-- ❌ 创建目录
-- ❌ 编辑文件内容
-- ❌ 压缩/解压文件
-- ❌ 修改文件权限
+### 5. Docker Compose (6/7)
+| 工具 | 状态 |
+|------|------|
+| list_composes | ✅ |
+| create_compose | ✅ |
+| remove_compose | ✅ |
+| start_compose | ✅ |
+| stop_compose | ✅ |
+| restart_compose | ✅ |
+| ~~get_compose_logs~~ | ⏭️ |
 
-### 5. 网站管理 (补充)
-- ❌ 创建网站
-- ❌ 删除网站
-- ❌ 配置网站
-- ❌ 申请SSL证书
-- ❌ 续签证书
-- ❌ 配置反向代理
+### 6. 应用管理 (5/7)
+| 工具 | 状态 |
+|------|------|
+| list_installed_apps | ✅ |
+| list_app_store | ✅ |
+| install_app | ✅ |
+| uninstall_app | ✅ |
+| update_app | ✅ |
+| ~~get_app_details~~ | ⏭️ |
+| ~~backup_app~~ | ⏭️ |
 
-### 6. 数据库管理 (补充)
-- ❌ 创建数据库
-- ❌ 删除数据库
-- ❌ 创建数据库用户
-- ❌ 管理数据库用户权限
-- ❌ 数据库备份/恢复
-- ❌ 连接数据库
+### 7. 文件管理 (5/9)
+| 工具 | 状态 |
+|------|------|
+| list_files | ✅ |
+| get_file_content | ✅ |
+| save_file | ✅ |
+| delete_file | ✅ |
+| create_dir | ✅ |
+| ~~rename_file~~ | ⏭️ |
+| ~~compress_files~~ | ⏭️ |
+| ~~decompress_file~~ | ⏭️ |
+| ~~change_mode~~ | ⏭️ |
 
-### 7. Docker Compose (补充)
-- ❌ 创建Compose
-- ❌ 删除Compose
-- ❌ 启动/停止Compose
-- ❌ 查看Compose日志
+### 8. 网站管理 (3/6)
+| 工具 | 状态 |
+|------|------|
+| list_websites | ✅ |
+| create_website | ✅ |
+| delete_website | ✅ |
+| ~~update_website~~ | ⏭️ |
+| ~~get_website_config~~ | ⏭️ |
+| ~~get_website_logs~~ | ⏭️ |
 
-### 8. 计划任务 (Cron)
-- ❌ 列出计划任务
-- ❌ 创建计划任务
-- ❌ 删除计划任务
-- ❌ 查看任务执行日志
+### 9. SSL 证书管理 (3/4)
+| 工具 | 状态 |
+|------|------|
+| list_certificates | ✅ |
+| create_certificate | ✅ |
+| delete_certificate | ✅ |
+| ~~renew_certificate~~ | ⏭️ |
 
-### 9. 防火墙
-- ❌ 查看防火墙规则
-- ❌ 添加/删除规则
-- ❌ 查看端口状态
+### 10. 数据库管理 (3/8)
+| 工具 | 状态 |
+|------|------|
+| list_databases | ✅ |
+| create_database | ✅ |
+| delete_database | ✅ |
+| ~~get_database~~ | ⏭️ |
+| ~~create_db_user~~ | ⏭️ |
+| ~~delete_db_user~~ | ⏭️ |
+| ~~backup_database~~ | ⏭️ |
+| ~~restore_database~~ | ⏭️ |
 
-### 10. 进程管理
-- ❌ 列出进程
-- ❌ 结束进程
+### 11. 系统监控 (2/2) ✅
+| 工具 | 状态 |
+|------|------|
+| get_system_info | ✅ |
+| get_system_monitor | ✅ |
 
-### 11. SSH管理
-- ❌ 查看SSH配置
-- ❌ 修改SSH配置
+### 12. 计划任务 (3/4)
+| 工具 | 状态 |
+|------|------|
+| list_cronjobs | ✅ |
+| create_cronjob | ✅ |
+| delete_cronjob | ✅ |
+| ~~get_cronjob_logs~~ | ⏭️ |
 
-### 12. 终端
-- ❌ 执行命令
-
-### 13. 备份恢复
-- ❌ 创建备份
-- ❌ 恢复备份
-- ❌ 查看备份列表
-
-### 14. 面板设置
-- ❌ 查看面板设置
-- ❌ 修改面板设置
-- ❌ API密钥管理
-
-### 15. 日志审计
-- ❌ 查看操作日志
-- ❌ 查看系统日志
-
-### 16. 专业版功能 (XPack)
-- ❌ WAF管理
-- ❌ 节点管理
-- ❌ 网站防篡改
-- ❌ GPU监控
+### 13. 防火墙管理 (3/4)
+| 工具 | 状态 |
+|------|------|
+| list_firewall_rules | ✅ |
+| create_firewall_rule | ✅ |
+| delete_firewall_rule | ✅ |
+| ~~update_firewall_rule~~ | ⏭️ |
 
 ---
 
-## 建议优先实现的高频功能
+## 尚未实现的重要功能 ❌
 
-1. **容器日志查看** - 排查问题必备
-2. **文件上传/下载** - 常用操作
-3. **应用安装/卸载** - 核心功能
-4. **网站创建/配置** - 核心功能
-5. **数据库创建/删除** - 常用操作
-6. **Compose操作** - 启动/停止/删除
-7. **计划任务管理** - 自动化运维
-8. **备份恢复** - 数据安全
+### 14. 进程管理
+- list_processes
+- kill_process
+
+### 15. SSH 管理
+- get_ssh_config
+- update_ssh_config
+
+### 16. 终端/命令执行
+- exec_command
+
+### 17. 备份恢复
+- list_backups
+- create_backup
+- restore_backup
+- delete_backup
+
+### 18. 面板设置
+- get_settings
+- update_settings
+- get_api_keys
+- create_api_key
+- delete_api_key
+
+### 19. 日志审计
+- list_operation_logs
+- list_system_logs
+
+### 20. 运行环境 (PHP/Node/Java/Python/Go)
+- list_environments
+- install_environment
+- uninstall_environment
+
+### 21. 专业版功能 (XPack)
+- WAF 管理
+- 节点管理
+- 网站防篡改
+- GPU 监控
+
+---
+
+## 总结
+
+| 类别 | 已实现 | 待实现 | 总计 |
+|------|--------|--------|------|
+| 核心功能 | 49 | 35+ | 84+ |
+| 覆盖率 | ~58% | ~42% | 100% |
+
+**已实现的核心功能**: 容器、镜像、网络、卷、Compose、应用、文件、网站、证书、数据库、系统监控、计划任务、防火墙
+
+**建议优先补充**:
+1. 进程管理 - 查看和结束进程
+2. 备份恢复 - 数据安全
+3. 终端命令 - 远程执行
+4. 文件压缩/解压 - 常用操作
+5. 数据库备份/恢复 - 数据安全

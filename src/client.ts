@@ -116,4 +116,34 @@ export class OnePanelClient {
   async listFirewallRules(): Promise<any> { return this.request("/api/v2/toolbox/firewall"); }
   async createFirewallRule(rule: any): Promise<any> { return this.request("/api/v2/toolbox/firewall", { method: "POST", body: JSON.stringify(rule) }); }
   async deleteFirewallRule(id: number): Promise<any> { return this.request("/api/v2/toolbox/firewall/del", { method: "POST", body: JSON.stringify({ id }) }); }
+
+  // Process Management
+  async listProcesses(): Promise<any> { return this.request("/api/v2/toolbox/process"); }
+  async killProcess(pid: number): Promise<any> { return this.request("/api/v2/toolbox/process/kill", { method: "POST", body: JSON.stringify({ pid }) }); }
+
+  // SSH Management
+  async getSSHConfig(): Promise<any> { return this.request("/api/v2/toolbox/ssh"); }
+  async updateSSHConfig(config: any): Promise<any> { return this.request("/api/v2/toolbox/ssh", { method: "POST", body: JSON.stringify(config) }); }
+
+  // Terminal
+  async execCommand(command: string, cwd?: string): Promise<any> { return this.request("/api/v2/terminal/exec", { method: "POST", body: JSON.stringify({ command, cwd }) }); }
+
+  // Backup & Restore
+  async listBackups(): Promise<any> { return this.request("/api/v2/settings/backup/search"); }
+  async createBackup(backup: any): Promise<any> { return this.request("/api/v2/settings/backup", { method: "POST", body: JSON.stringify(backup) }); }
+  async restoreBackup(id: number): Promise<any> { return this.request("/api/v2/settings/backup/restore", { method: "POST", body: JSON.stringify({ id }) }); }
+  async deleteBackup(id: number): Promise<any> { return this.request("/api/v2/settings/backup/del", { method: "POST", body: JSON.stringify({ id }) }); }
+
+  // Settings
+  async getSettings(): Promise<any> { return this.request("/api/v2/settings"); }
+  async updateSettings(settings: any): Promise<any> { return this.request("/api/v2/settings", { method: "POST", body: JSON.stringify(settings) }); }
+
+  // Logs
+  async listOperationLogs(): Promise<any> { return this.request("/api/v2/logs/operation"); }
+  async listSystemLogs(): Promise<any> { return this.request("/api/v2/logs/system"); }
+
+  // Runtime Environments
+  async listEnvironments(type: string): Promise<any> { return this.request(`/api/v2/runtimes/${type}/search`); }
+  async installEnvironment(type: string, config: any): Promise<any> { return this.request(`/api/v2/runtimes/${type}`, { method: "POST", body: JSON.stringify(config) }); }
+  async uninstallEnvironment(type: string, id: number): Promise<any> { return this.request(`/api/v2/runtimes/${type}/del`, { method: "POST", body: JSON.stringify({ id }) }); }
 }

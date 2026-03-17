@@ -77,6 +77,29 @@ const tools = [
     { name: "list_firewall_rules", description: "List firewall rules", inputSchema: { type: "object", properties: {} } },
     { name: "create_firewall_rule", description: "Create firewall rule", inputSchema: { type: "object", properties: { rule: { type: "object" } }, required: ["rule"] } },
     { name: "delete_firewall_rule", description: "Delete firewall rule", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
+    // Process
+    { name: "list_processes", description: "List processes", inputSchema: { type: "object", properties: {} } },
+    { name: "kill_process", description: "Kill process", inputSchema: { type: "object", properties: { pid: { type: "number" } }, required: ["pid"] } },
+    // SSH
+    { name: "get_ssh_config", description: "Get SSH config", inputSchema: { type: "object", properties: {} } },
+    { name: "update_ssh_config", description: "Update SSH config", inputSchema: { type: "object", properties: { config: { type: "object" } }, required: ["config"] } },
+    // Terminal
+    { name: "exec_command", description: "Execute command", inputSchema: { type: "object", properties: { command: { type: "string" }, cwd: { type: "string" } }, required: ["command"] } },
+    // Backup
+    { name: "list_backups", description: "List backups", inputSchema: { type: "object", properties: {} } },
+    { name: "create_backup", description: "Create backup", inputSchema: { type: "object", properties: { backup: { type: "object" } }, required: ["backup"] } },
+    { name: "restore_backup", description: "Restore backup", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
+    { name: "delete_backup", description: "Delete backup", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
+    // Settings
+    { name: "get_settings", description: "Get settings", inputSchema: { type: "object", properties: {} } },
+    { name: "update_settings", description: "Update settings", inputSchema: { type: "object", properties: { settings: { type: "object" } }, required: ["settings"] } },
+    // Logs
+    { name: "list_operation_logs", description: "List operation logs", inputSchema: { type: "object", properties: {} } },
+    { name: "list_system_logs", description: "List system logs", inputSchema: { type: "object", properties: {} } },
+    // Runtime
+    { name: "list_environments", description: "List environments", inputSchema: { type: "object", properties: { type: { type: "string" } }, required: ["type"] } },
+    { name: "install_environment", description: "Install environment", inputSchema: { type: "object", properties: { type: { type: "string" }, config: { type: "object" } }, required: ["type", "config"] } },
+    { name: "uninstall_environment", description: "Uninstall environment", inputSchema: { type: "object", properties: { type: { type: "string" }, id: { type: "number" } }, required: ["type", "id"] } },
 ];
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -240,6 +263,61 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 break;
             case "delete_firewall_rule":
                 result = await client.deleteFirewallRule(args?.id);
+                break;
+            // Process
+            case "list_processes":
+                result = await client.listProcesses();
+                break;
+            case "kill_process":
+                result = await client.killProcess(args?.pid);
+                break;
+            // SSH
+            case "get_ssh_config":
+                result = await client.getSSHConfig();
+                break;
+            case "update_ssh_config":
+                result = await client.updateSSHConfig(args?.config);
+                break;
+            // Terminal
+            case "exec_command":
+                result = await client.execCommand(args?.command, args?.cwd);
+                break;
+            // Backup
+            case "list_backups":
+                result = await client.listBackups();
+                break;
+            case "create_backup":
+                result = await client.createBackup(args?.backup);
+                break;
+            case "restore_backup":
+                result = await client.restoreBackup(args?.id);
+                break;
+            case "delete_backup":
+                result = await client.deleteBackup(args?.id);
+                break;
+            // Settings
+            case "get_settings":
+                result = await client.getSettings();
+                break;
+            case "update_settings":
+                result = await client.updateSettings(args?.settings);
+                break;
+            // Logs
+            case "list_operation_logs":
+                result = await client.listOperationLogs();
+                break;
+            case "list_system_logs":
+                result = await client.listSystemLogs();
+                break;
+            // Runtime
+            case "list_environments":
+                result = await client.listEnvironments(args?.type);
+                break;
+            case "install_environment":
+                result = await client.installEnvironment(args?.type, args?.config);
+                break;
+            case "uninstall_environment":
+                result = await client.uninstallEnvironment(args?.type, args?.id);
                 break;
             default: throw new Error(`Unknown tool: ${name}`);
         }
