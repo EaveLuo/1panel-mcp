@@ -1,0 +1,30 @@
+{
+  "name": "1panel-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for 1Panel - Model Context Protocol server for managing 1Panel through AI agents",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "1panel",
+    "model-context-protocol",
+    "ai",
+    "server-management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
