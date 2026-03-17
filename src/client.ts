@@ -89,7 +89,7 @@ export class OnePanelClient {
   async createDir(path: string): Promise<any> { return this.request("/api/v2/files/dir", { method: "POST", body: JSON.stringify({ path }) }); }
 
   // Websites
-  async listWebsites(): Promise<any> { return this.request("/api/v2/websites/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
+  async listWebsites(): Promise<any> { return this.request("/api/v2/websites/list"); }
   async createWebsite(site: any): Promise<any> { return this.request("/api/v2/websites", { method: "POST", body: JSON.stringify(site) }); }
   async deleteWebsite(id: number): Promise<any> { return this.request("/api/v2/websites/del", { method: "POST", body: JSON.stringify({ id }) }); }
 
