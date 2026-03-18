@@ -140,10 +140,35 @@ export class OnePanelClient {
   // Websites
   listWebsites = () => this.websites.list();
   createWebsite = (site: any) => this.websites.create(site);
+  getWebsite = (id: number) => this.websites.getDetail(id);
+  updateWebsite = (site: any) => this.websites.update(site);
   deleteWebsite = (id: number) => this.websites.remove(id);
+
+  // Website Domains
+  listWebsiteDomains = (websiteId: number) => this.websites.listDomains(websiteId);
+  createWebsiteDomain = (params: any) => this.websites.createDomain(params);
+  deleteWebsiteDomain = (params: any) => this.websites.deleteDomain(params);
+  updateWebsiteDomain = (params: any) => this.websites.updateDomain(params);
+
+  // SSL Certificates
   listCertificates = () => this.websites.listCertificates();
+  getCertificate = (id: number) => this.websites.getCertificate(id);
   createCertificate = (cert: any) => this.websites.createCertificate(cert);
   deleteCertificate = (id: number) => this.websites.deleteCertificate(id);
+  obtainSSL = (params: any) => this.websites.obtainSSL(params);
+  renewSSL = (params: any) => this.websites.renewSSL(params);
+  resolveSSL = (params: any) => this.websites.resolveSSL(params);
+  uploadSSL = (params: any) => this.websites.uploadSSL(params);
+  getWebsiteSSL = (websiteId: number) => this.websites.getWebsiteSSL(websiteId);
+
+  // HTTPS
+  getHTTPS = (id: number) => this.websites.getHTTPS(id);
+  updateHTTPS = (params: any) => this.websites.updateHTTPS(params);
+  applySSL = (params: any) => this.websites.applySSL(params);
+
+  // Nginx
+  getNginxConf = (id: number) => this.websites.getNginxConf(id);
+  updateNginxConf = (params: any) => this.websites.updateNginxConf(params);
 
   // Files
   listFiles = (path: string, page?: number, pageSize?: number) => this.files.list(path, page, pageSize);
@@ -166,10 +191,36 @@ export class OnePanelClient {
   uploadFile = (params: any) => this.files.upload(params);
   wgetFile = (url: string, path: string, ignoreCertificate?: boolean) => this.files.wget(url, path, ignoreCertificate);
 
-  // Databases
+  // Databases - Basic
   listDatabases = (type: string) => this.databases.list(type);
   createDatabase = (type: string, db: any) => this.databases.create(type, db);
   deleteDatabase = (type: string, id: number) => this.databases.remove(type, id);
+  getDatabase = (type: string, id: number) => this.databases.getDetail(type, id);
+
+  // Databases - MySQL
+  mysqlBindUser = (params: any) => this.databases.mysqlBindUser(params);
+  mysqlChangePassword = (params: any) => this.databases.mysqlChangePassword(params);
+  mysqlChangeAccess = (params: any) => this.databases.mysqlChangeAccess(params);
+  mysqlGetInfo = (from?: "local" | "remote") => this.databases.mysqlGetInfo(from);
+  mysqlGetRemoteAccess = () => this.databases.mysqlGetRemoteAccess();
+  mysqlUpdateRemoteAccess = (privilege: boolean) => this.databases.mysqlUpdateRemoteAccess(privilege);
+  mysqlGetStatus = () => this.databases.mysqlGetStatus();
+  mysqlGetVariables = () => this.databases.mysqlGetVariables();
+  mysqlUpdateVariables = (variables: Record<string, string>) => this.databases.mysqlUpdateVariables(variables);
+
+  // Databases - PostgreSQL
+  postgresqlBindUser = (params: any) => this.databases.postgresqlBindUser(params);
+  postgresqlChangePassword = (params: any) => this.databases.postgresqlChangePassword(params);
+  postgresqlChangePrivileges = (params: any) => this.databases.postgresqlChangePrivileges(params);
+  postgresqlListDatabases = () => this.databases.postgresqlListDatabases();
+
+  // Databases - Redis
+  redisGetConf = (id: number) => this.databases.redisGetConf(id);
+  redisUpdateConf = (params: any) => this.databases.redisUpdateConf(params);
+  redisChangePassword = (params: any) => this.databases.redisChangePassword(params);
+  redisGetStatus = () => this.databases.redisGetStatus();
+  redisGetPersistenceConf = (id: number) => this.databases.redisGetPersistenceConf(id);
+  redisUpdatePersistenceConf = (id: number, params: any) => this.databases.redisUpdatePersistenceConf(id, params);
 
   // System
   getSystemInfo = () => this.system.getInfo();

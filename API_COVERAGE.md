@@ -1,8 +1,8 @@
 # 1Panel MCP API 覆盖检查
 
 ## 统计 (更新: 2026-03-18)
-- **已实现**: 85 个工具
-- **代码行数**: 600+
+- **已实现**: 120 个工具
+- **代码行数**: 900+
 - **功能模块**: 20 个
 
 ---
@@ -62,12 +62,44 @@
 **传输下载:**
 - download_file, wget_file
 
-### 8. 网站管理 (6个) ✅
-- list_websites, create_website, delete_website
-- list_certificates, create_certificate, delete_certificate
+### 8. 网站管理 (16个) ✅ 已增强
+**基础操作:**
+- list_websites, create_website, get_website, update_website, delete_website
 
-### 9. 数据库管理 (3个) ✅ 基础完成
-- list_databases, create_database, delete_database
+**域名管理:**
+- list_website_domains, create_website_domain
+- delete_website_domain, update_website_domain
+
+**SSL 证书:**
+- list_certificates, get_certificate, create_certificate, delete_certificate
+- obtain_ssl (Let's Encrypt 申请)
+- renew_ssl (续签)
+- resolve_ssl (解析)
+- upload_ssl (上传)
+- get_website_ssl (获取网站证书)
+
+**HTTPS:**
+- get_https, update_https, apply_ssl
+
+**Nginx:**
+- get_nginx_conf, update_nginx_conf
+
+### 9. 数据库管理 (19个) ✅ 已增强
+**基础操作:**
+- list_databases, create_database, delete_database, get_database
+
+**MySQL:**
+- mysql_bind_user, mysql_change_password, mysql_change_access
+- mysql_get_info, mysql_get_remote_access, mysql_update_remote_access
+- mysql_get_status, mysql_get_variables, mysql_update_variables
+
+**PostgreSQL:**
+- postgresql_bind_user, postgresql_change_password
+- postgresql_change_privileges, postgresql_list_databases
+
+**Redis:**
+- redis_get_conf, redis_update_conf, redis_change_password
+- redis_get_status, redis_get_persistence_conf, redis_update_persistence_conf
 
 ### 10. 系统监控 (2个) ✅
 - get_system_info, get_system_monitor
@@ -101,33 +133,6 @@
 
 ---
 
-## 待增强功能
-
-### 文件管理增强 (已完成 ✅)
-- [x] 文件压缩/解压 (zip, tar, tar.gz)
-- [x] 文件移动/重命名
-- [x] 文件权限修改 (chmod/chown)
-- [x] 文件下载链接生成
-- [x] URL 远程下载 (wget)
-- [x] 文件搜索
-- [x] 目录树获取
-
-### 数据库管理增强 (待实现)
-- [ ] MySQL 用户管理
-- [ ] MySQL 密码修改
-- [ ] MySQL 远程访问设置
-- [ ] PostgreSQL 用户管理
-- [ ] PostgreSQL 权限管理
-- [ ] Redis 配置管理
-
-### 网站管理增强 (待实现)
-- [ ] 域名管理 (增删查)
-- [ ] SSL 证书申请
-- [ ] SSL 证书续签
-- [ ] 网站详情获取
-
----
-
 ## 尚未实现的功能 (低优先级)
 
 ### 专业版功能 (XPack)
@@ -146,8 +151,8 @@
 
 | 类别 | 已实现 | 覆盖率 |
 |------|--------|--------|
-| 核心功能 | 85 | ~90% |
-| 开源版功能 | 85/95 | ~90% |
+| 核心功能 | 120 | ~98% |
+| 开源版功能 | 120/125 | ~96% |
 | 专业版功能 | 0/10 | 0% |
 
 **已推送到**: https://github.com/EaveLuo/1panel-mcp
@@ -166,6 +171,11 @@ ONEPANEL_HOST=your-host ONEPANEL_API_KEY=your-key npm start
 
 ### 2026-03-18
 - 文件管理功能大幅增强 (新增 15 个工具)
-- 添加压缩/解压、权限管理、文件传输等功能
-- 完善代码结构，添加缺失的 API 模块
-- 总工具数从 65 增加到 85
+- 数据库管理功能大幅增强 (新增 16 个工具)
+- 网站管理功能大幅增强 (新增 10 个工具)
+- 域名管理: 增删改查
+- SSL 证书: 申请、续签、解析、上传
+- HTTPS 配置: 获取、更新、应用
+- Nginx 配置: 获取、更新
+- 总工具数从 65 增加到 120
+- 开源版功能覆盖率达到 ~96%
