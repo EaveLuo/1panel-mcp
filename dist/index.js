@@ -25,6 +25,9 @@ import { ftpTools, handleFTPTool } from "./tools/ftp.js";
 import { clamTools, handleClamTool } from "./tools/clam.js";
 import { phpTools, handlePHPTool } from "./tools/php.js";
 import { hostTools, handleHostTool } from "./tools/host.js";
+import { recycleBinTools, handleRecycleBinTool } from "./tools/recyclebin.js";
+import { snapshotTools, handleSnapshotTool } from "./tools/snapshot.js";
+import { taskTools, handleTaskTool } from "./tools/task.js";
 const config = {
     host: process.env.ONEPANEL_HOST || "localhost",
     port: parseInt(process.env.ONEPANEL_PORT || "8080"),
@@ -60,6 +63,9 @@ const tools = [
     ...clamTools,
     ...phpTools,
     ...hostTools,
+    ...recycleBinTools,
+    ...snapshotTools,
+    ...taskTools,
 ];
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -128,6 +134,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         if (result !== null)
             return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
         result = await handleHostTool(client, name, args);
+        if (result !== null)
+            return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        result = await handleRecycleBinTool(client, name, args);
+        if (result !== null)
+            return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        result = await handleSnapshotTool(client, name, args);
+        if (result !== null)
+            return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        result = await handleTaskTool(client, name, args);
         if (result !== null)
             return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
         throw new Error(`Unknown tool: ${name}`);

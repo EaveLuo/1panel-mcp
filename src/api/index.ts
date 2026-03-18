@@ -28,3 +28,6 @@ export { FTPAPI } from "./ftp.js";
 export { ClamAPI } from "./clam.js";
 export { PHPAPI } from "./php.js";
 export { HostAPI } from "./host.js";
+export { RecycleBinAPI } from "./recyclebin.js";
+export { SnapshotAPI } from "./snapshot.js";
+export { TaskAPI } from "./task.js";

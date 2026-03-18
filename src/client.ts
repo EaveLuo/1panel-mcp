@@ -29,6 +29,9 @@ import {
   ClamAPI,
   PHPAPI,
   HostAPI,
+  RecycleBinAPI,
+  SnapshotAPI,
+  TaskAPI,
 } from "./api/index.js";
 
 export class OnePanelClient {
@@ -64,6 +67,9 @@ export class OnePanelClient {
   public clam: ClamAPI;
   public php: PHPAPI;
   public host: HostAPI;
+  public recycleBin: RecycleBinAPI;
+  public snapshot: SnapshotAPI;
+  public task: TaskAPI;
 
   constructor(config: OnePanelConfig) {
     this.config = { protocol: "http", ...config };
@@ -98,6 +104,9 @@ export class OnePanelClient {
     this.clam = new ClamAPI(this.config);
     this.php = new PHPAPI(this.config);
     this.host = new HostAPI(this.config);
+    this.recycleBin = new RecycleBinAPI(this.config);
+    this.snapshot = new SnapshotAPI(this.config);
+    this.task = new TaskAPI(this.config);
   }
 
   // Backward compatibility - delegate to modules
@@ -398,6 +407,26 @@ export class OnePanelClient {
   updateHostSSHKey = (id: number, authMode: string, password?: string, privateKey?: string) => this.host.updateSSHKey(id, authMode, password, privateKey);
   getHostSSHConf = () => this.host.getSSHConf();
   getHostSSHLogs = () => this.host.getSSHLogs();
+
+  // RecycleBin
+  getRecycleBinStatus = () => this.recycleBin.getStatus();
+  listRecycleBin = () => this.recycleBin.list();
+  clearRecycleBin = () => this.recycleBin.clear();
+  reduceRecycleBin = (name: string) => this.recycleBin.reduce(name);
+
+  // Snapshot
+  listSnapshots = () => this.snapshot.list();
+  createSnapshot = (params: any) => this.snapshot.create(params);
+  deleteSnapshot = (ids: number[]) => this.snapshot.remove(ids);
+  updateSnapshotDescription = (id: number, description: string) => this.snapshot.updateDescription(id, description);
+  importSnapshot = (params: any) => this.snapshot.import(params);
+  loadSnapshot = (id: number) => this.snapshot.load(id);
+  recoverSnapshot = (id: number, isNewSnapshot?: boolean) => this.snapshot.recover(id, isNewSnapshot);
+  recreateSnapshot = (id: number) => this.snapshot.recreate(id);
+
+  // Task
+  getExecutingTaskCount = () => this.task.getExecutingCount();
+  getTaskLogs = () => this.task.getLogs();
 }
 
 export { OnePanelConfig } from "./types/config.js";
