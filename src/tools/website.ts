@@ -49,6 +49,8 @@ export async function handleWebsiteTool(client: any, name: string, args: any) {
     case "apply_ssl": return await client.applySSL(args);
     case "get_nginx_conf": return await client.getNginxConf(args?.id);
     case "update_nginx_conf": return await client.updateNginxConf(args);
+    case "get_antileech_conf": return await client.getAntiLeechConf(args?.websiteId);
+    case "update_antileech": return await client.updateAntiLeech(args?.params);
     default: return null;
   }
 }

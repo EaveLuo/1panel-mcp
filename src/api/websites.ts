@@ -263,4 +263,20 @@ export class WebsiteAPI extends BaseAPI {
   async updateNginxConf(params: NginxUpdateRequest): Promise<any> {
     return this.post("/api/v2/websites/nginx/update", params);
   }
+
+  // ==================== AntiLeech (XPack) ====================
+
+  /**
+   * 获取防盗链配置
+   */
+  async getAntiLeechConf(websiteId: number): Promise<any> {
+    return this.request(`/api/v2/websites/leech/${websiteId}`, { method: "GET" });
+  }
+
+  /**
+   * 更新防盗链配置
+   */
+  async updateAntiLeech(params: any): Promise<any> {
+    return this.post("/api/v2/websites/leech/update", params);
+  }
 }

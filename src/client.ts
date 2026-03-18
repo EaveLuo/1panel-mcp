@@ -36,6 +36,7 @@ import {
   GPUAPI,
   NodeAPI,
   AIAPI,
+  OllamaAPI,
 } from "./api/index.js";
 
 export class OnePanelClient {
@@ -78,6 +79,7 @@ export class OnePanelClient {
   public gpu: GPUAPI;
   public node: NodeAPI;
   public ai: AIAPI;
+  public ollama: OllamaAPI;
 
   constructor(config: OnePanelConfig) {
     this.config = { protocol: "http", ...config };
@@ -119,6 +121,7 @@ export class OnePanelClient {
     this.gpu = new GPUAPI(this.config);
     this.node = new NodeAPI(this.config);
     this.ai = new AIAPI(this.config);
+    this.ollama = new OllamaAPI(this.config);
   }
 
   // Backward compatibility - delegate to modules
@@ -489,6 +492,19 @@ export class OnePanelClient {
   getMCPDomain = () => this.ai.getMCPDomain();
   bindMCPDomain = (params: any) => this.ai.bindMCPDomain(params);
   updateMCPDomain = (params: any) => this.ai.updateMCPDomain(params);
+
+  // Ollama (XPack)
+  listOllamaModels = () => this.ollama.list();
+  createOllamaModel = (name: string) => this.ollama.create(name);
+  deleteOllamaModel = (ids: number[]) => this.ollama.remove(ids);
+  loadOllamaModel = (name: string) => this.ollama.load(name);
+  recreateOllamaModel = (name: string) => this.ollama.recreate(name);
+  syncOllamaModels = () => this.ollama.sync();
+  closeOllamaModel = (name: string) => this.ollama.close(name);
+
+  // AntiLeech (XPack)
+  getAntiLeechConf = (websiteId: number) => this.websites.getAntiLeechConf(websiteId);
+  updateAntiLeech = (params: any) => this.websites.updateAntiLeech(params);
 }
 
 export { OnePanelConfig } from "./types/config.js";

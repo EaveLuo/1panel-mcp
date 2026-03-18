@@ -32,6 +32,7 @@ import { openrestyTools, handleOpenRestyTool } from "./tools/openresty.js";
 import { gpuTools, handleGPUTool } from "./tools/gpu.js";
 import { nodeTools, handleNodeTool } from "./tools/node.js";
 import { aiTools, handleAITool } from "./tools/ai.js";
+import { ollamaTools, handleOllamaTool } from "./tools/ollama.js";
 const config = {
     host: process.env.ONEPANEL_HOST || "localhost",
     port: parseInt(process.env.ONEPANEL_PORT || "8080"),
@@ -74,6 +75,7 @@ const tools = [
     ...gpuTools,
     ...nodeTools,
     ...aiTools,
+    ...ollamaTools,
 ];
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -163,6 +165,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         if (result !== null)
             return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
         result = await handleAITool(client, name, args);
+        if (result !== null)
+            return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        result = await handleOllamaTool(client, name, args);
         if (result !== null)
             return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
         throw new Error(`Unknown tool: ${name}`);

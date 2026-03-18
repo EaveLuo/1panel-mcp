@@ -35,3 +35,4 @@ export { OpenRestyAPI } from "./openresty.js";
 export { GPUAPI } from "./gpu.js";
 export { NodeAPI } from "./node.js";
 export { AIAPI } from "./ai.js";
+export { OllamaAPI } from "./ollama.js";
