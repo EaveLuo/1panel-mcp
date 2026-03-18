@@ -1,11 +1,12 @@
 {
-  "name": "1panel-mcp",
+  "name": "1panel-mcp-server",
   "version": "1.0.0",
   "description": "MCP server for 1Panel - Model Context Protocol server for managing 1Panel through AI agents",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "1panel-mcp": "./dist/cli.js"
+    "1panel-mcp-server": "./dist/cli.js",
+    "1pmcp": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
