@@ -32,6 +32,10 @@ import {
   RecycleBinAPI,
   SnapshotAPI,
   TaskAPI,
+  OpenRestyAPI,
+  GPUAPI,
+  NodeAPI,
+  AIAPI,
 } from "./api/index.js";
 
 export class OnePanelClient {
@@ -70,6 +74,10 @@ export class OnePanelClient {
   public recycleBin: RecycleBinAPI;
   public snapshot: SnapshotAPI;
   public task: TaskAPI;
+  public openresty: OpenRestyAPI;
+  public gpu: GPUAPI;
+  public node: NodeAPI;
+  public ai: AIAPI;
 
   constructor(config: OnePanelConfig) {
     this.config = { protocol: "http", ...config };
@@ -107,6 +115,10 @@ export class OnePanelClient {
     this.recycleBin = new RecycleBinAPI(this.config);
     this.snapshot = new SnapshotAPI(this.config);
     this.task = new TaskAPI(this.config);
+    this.openresty = new OpenRestyAPI(this.config);
+    this.gpu = new GPUAPI(this.config);
+    this.node = new NodeAPI(this.config);
+    this.ai = new AIAPI(this.config);
   }
 
   // Backward compatibility - delegate to modules
@@ -427,6 +439,56 @@ export class OnePanelClient {
   // Task
   getExecutingTaskCount = () => this.task.getExecutingCount();
   getTaskLogs = () => this.task.getLogs();
+
+  // OpenResty (XPack)
+  getOpenRestyConf = () => this.openresty.getConf();
+  buildOpenResty = (params: any) => this.openresty.build(params);
+  updateOpenRestyByFile = (content: string) => this.openresty.updateByFile(content);
+  getOpenRestyModules = () => this.openresty.getModules();
+  updateOpenRestyModule = (params: any) => this.openresty.updateModule(params);
+  getOpenRestyPartialConf = () => this.openresty.getPartialConf();
+  getOpenRestyStatus = () => this.openresty.getStatus();
+  updateOpenRestyConf = (params: any) => this.openresty.updateConf(params);
+
+  // GPU (XPack)
+  getGPUInfo = () => this.gpu.getInfo();
+  getGPUMonitorData = (params: any) => this.gpu.getMonitorData(params);
+
+  // Node (XPack)
+  getNodeModules = (id: number) => this.node.getModules(id);
+  operateNodeModule = (id: number, params: any) => this.node.operateModule(id, params);
+  getNodePackageScripts = (id: number, params: any) => this.node.getPackageScripts(id, params);
+
+  // AI Agent (XPack)
+  listAIAgents = () => this.ai.listAgents();
+  createAIAgent = (params: any) => this.ai.createAgent(params);
+  updateAIAgent = (params: any) => this.ai.updateAgent(params);
+  deleteAIAgent = (id: number) => this.ai.deleteAgent(id);
+  resetAIAgentToken = (id: number) => this.ai.resetAgentToken(id);
+  updateAIAgentModel = (id: number, params: any) => this.ai.updateAgentModel(id, params);
+  listAIAgentAccounts = () => this.ai.listAgentAccounts();
+  createAIAgentAccount = (params: any) => this.ai.createAgentAccount(params);
+  updateAIAgentAccount = (params: any) => this.ai.updateAgentAccount(params);
+  deleteAIAgentAccount = (id: number) => this.ai.deleteAgentAccount(id);
+  verifyAIAgentAccount = (params: any) => this.ai.verifyAgentAccount(params);
+  getAIAgentBrowserConfig = (agentId: number) => this.ai.getAgentBrowserConfig(agentId);
+  updateAIAgentBrowserConfig = (agentId: number, params: any) => this.ai.updateAgentBrowserConfig(agentId, params);
+  getAIAgentDiscordConfig = (agentId: number) => this.ai.getAgentDiscordConfig(agentId);
+  updateAIAgentDiscordConfig = (agentId: number, params: any) => this.ai.updateAgentDiscordConfig(agentId, params);
+  getAIAgentFeishuConfig = (agentId: number) => this.ai.getAgentFeishuConfig(agentId);
+  updateAIAgentFeishuConfig = (agentId: number, params: any) => this.ai.updateAgentFeishuConfig(agentId, params);
+  getAIAgentTelegramConfig = (agentId: number) => this.ai.getAgentTelegramConfig(agentId);
+  updateAIAgentTelegramConfig = (agentId: number, params: any) => this.ai.updateAgentTelegramConfig(agentId, params);
+
+  // MCP Server (XPack)
+  listMCPServers = () => this.ai.listMCPServers();
+  createMCPServer = (params: any) => this.ai.createMCPServer(params);
+  updateMCPServer = (id: number, params: any) => this.ai.updateMCPServer(id, params);
+  deleteMCPServer = (id: number) => this.ai.deleteMCPServer(id);
+  operateMCPServer = (id: number, operation: string) => this.ai.operateMCPServer(id, operation);
+  getMCPDomain = () => this.ai.getMCPDomain();
+  bindMCPDomain = (params: any) => this.ai.bindMCPDomain(params);
+  updateMCPDomain = (params: any) => this.ai.updateMCPDomain(params);
 }
 
 export { OnePanelConfig } from "./types/config.js";

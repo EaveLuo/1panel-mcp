@@ -31,3 +31,7 @@ export { HostAPI } from "./host.js";
 export { RecycleBinAPI } from "./recyclebin.js";
 export { SnapshotAPI } from "./snapshot.js";
 export { TaskAPI } from "./task.js";
+export { OpenRestyAPI } from "./openresty.js";
+export { GPUAPI } from "./gpu.js";
+export { NodeAPI } from "./node.js";
+export { AIAPI } from "./ai.js";

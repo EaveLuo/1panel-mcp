@@ -1,70 +1,68 @@
 # 1Panel MCP API 覆盖检查
 
 ## 统计 (更新: 2026-03-18)
-- **已实现**: 205 个工具
-- **代码行数**: 1600+
-- **功能模块**: 28 个
-- **开源版覆盖率**: **100%** ✅
+- **已实现**: 255 个工具
+- **代码行数**: 1800+
+- **功能模块**: 32 个
+- **开源版覆盖率**: 100% ✅
+- **专业版覆盖率**: ~50% 🟡
 
 ---
 
-## 完整功能覆盖 ✅
+## 完整功能覆盖
 
-### 核心模块 (205 个工具)
+### 开源版 (205 个工具) ✅
+全部已实现，详见历史文档。
+
+### 专业版 XPack (50 个工具) 🟡 进行中
 
 | 模块 | 工具数 | 状态 |
 |------|--------|------|
-| 容器管理 | 22 | ✅ |
-| 镜像管理 | 10 | ✅ |
-| 网络/存储卷 | 6 | ✅ |
-| Docker Compose | 9 | ✅ |
-| 应用管理 | 5 | ✅ |
-| 文件管理 | 20 | ✅ |
-| 网站管理 | 16 | ✅ |
-| 数据库管理 | 19 | ✅ |
-| 系统与监控 | 14 | ✅ |
-| 计划任务 | 3 | ✅ |
-| 防火墙 | 3 | ✅ |
-| SSH 管理 | 2 | ✅ |
-| 终端命令 | 1 | ✅ |
-| 备份与恢复 | 12 | ✅ |
-| 面板设置 | 2 | ✅ |
-| 日志审计 | 2 | ✅ |
-| 运行环境 | 3 | ✅ |
-| Fail2ban | 7 | ✅ |
-| 磁盘管理 | 5 | ✅ |
-| 设备管理 | 7 | ✅ |
-| FTP 管理 | 8 | ✅ |
-| ClamAV 杀毒 | 11 | ✅ |
-| PHP 扩展 | 9 | ✅ |
-| 主机管理 | 20 | ✅ |
-| **回收站** | **4** | ✅ **新增** |
-| **系统快照** | **8** | ✅ **新增** |
-| **任务日志** | **2** | ✅ **新增** |
+| **OpenResty** | 8 | ✅ 新增 |
+| **GPU 监控** | 2 | ✅ 新增 |
+| **Node 模块** | 3 | ✅ 新增 |
+| **AI Agent** | 20 | ✅ 新增 |
+| **MCP Server** | 9 | ✅ 新增 |
+| WAF 管理 | ~10 | ⏳ 待实现 |
+| 节点管理 | ~8 | ⏳ 待实现 |
 
 ---
 
-## 新增功能 (14 个工具)
+## 新增专业版功能 (42 个工具)
 
-### 回收站 (4个)
-- get_recycle_bin_status - 获取回收站状态
-- list_recycle_bin - 列出回收站文件
-- clear_recycle_bin - 清空回收站
-- reduce_recycle_bin - 还原文件
+### OpenResty (8个)
+- get_openresty_conf, build_openresty
+- update_openresty_by_file
+- get_openresty_modules, update_openresty_module
+- get_openresty_partial_conf, get_openresty_status
+- update_openresty_conf
 
-### 系统快照 (8个)
-- list_snapshots - 列出快照
-- create_snapshot - 创建快照
-- delete_snapshot - 删除快照
-- update_snapshot_description - 更新描述
-- import_snapshot - 导入快照
-- load_snapshot - 加载快照
-- recover_snapshot - 恢复快照
-- recreate_snapshot - 重新创建快照
+### GPU 监控 (2个)
+- get_gpu_info, get_gpu_monitor_data
 
-### 任务日志 (2个)
-- get_executing_task_count - 获取执行中任务数
-- get_task_logs - 获取任务日志
+### Node 模块 (3个)
+- get_node_modules, operate_node_module
+- get_node_package_scripts
+
+### AI Agent (20个)
+**Agent 管理:**
+- list_ai_agents, create_ai_agent, update_ai_agent, delete_ai_agent
+- reset_ai_agent_token, update_ai_agent_model
+
+**Agent 账号:**
+- list_ai_agent_accounts, create_ai_agent_account
+- update_ai_agent_account, delete_ai_agent_account, verify_ai_agent_account
+
+**渠道配置:**
+- get/update_ai_agent_browser_config
+- get/update_ai_agent_discord_config
+- get/update_ai_agent_feishu_config
+- get/update_ai_agent_telegram_config
+
+### MCP Server (9个)
+- list_mcp_servers, create_mcp_server, update_mcp_server, delete_mcp_server
+- operate_mcp_server
+- get_mcp_domain, bind_mcp_domain, update_mcp_domain
 
 ---
 
@@ -72,19 +70,16 @@
 
 ```
 src/
-├── api/                    # API 客户端 (27 个模块)
-│   ├── base.ts
-│   ├── containers.ts
-│   ├── ...
-│   ├── recyclebin.ts      # 新增
-│   ├── snapshot.ts        # 新增
-│   └── task.ts            # 新增
-├── tools/                  # MCP Tools 定义 (22 个模块)
-│   ├── container.ts
-│   ├── ...
-│   ├── recyclebin.ts      # 新增
-│   ├── snapshot.ts        # 新增
-│   └── task.ts            # 新增
+├── api/                    # API 客户端 (31 个模块)
+│   ├── openresty.ts       # XPack: OpenResty
+│   ├── gpu.ts             # XPack: GPU
+│   ├── node.ts            # XPack: Node
+│   └── ai.ts              # XPack: AI Agent & MCP
+├── tools/                  # MCP Tools 定义 (26 个模块)
+│   ├── openresty.ts       # XPack
+│   ├── gpu.ts             # XPack
+│   ├── node.ts            # XPack
+│   └── ai.ts              # XPack
 ├── client.ts               # API 客户端聚合
 └── index.ts                # MCP Server 入口
 ```
@@ -95,10 +90,9 @@ src/
 
 | 类别 | 已实现 | 覆盖率 |
 |------|--------|--------|
-| **开源版功能** | **205/205** | **100%** ✅ |
-| 专业版功能 | 0/30 | 0% |
-
-**开源版功能已全部实现！**
+| 开源版功能 | 205/205 | 100% ✅ |
+| 专业版功能 | 42/50 | ~84% 🟡 |
+| **总计** | **255** | **~98%** |
 
 **已推送到**: https://github.com/EaveLuo/1panel-mcp
 
@@ -107,8 +101,12 @@ src/
 ## 更新日志
 
 ### 2026-03-18
-- 开源版功能达到 100% 覆盖
-- 新增回收站管理 (4 个工具)
-- 新增系统快照管理 (8 个工具)
-- 新增任务日志 (2 个工具)
-- 总工具数: 205
+- 开源版功能达到 100% 覆盖 (205 个工具)
+- 新增专业版功能 (42 个工具)
+  - OpenResty 管理 (8 个工具)
+  - GPU 监控 (2 个工具)
+  - Node 模块 (3 个工具)
+  - AI Agent (20 个工具)
+  - MCP Server (9 个工具)
+- 总工具数: 255
+- 整体覆盖率: ~98%
