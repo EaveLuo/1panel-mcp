@@ -1,6 +1,6 @@
-# 1Panel MCP
+# 1Panel MCP Server
 
-[![npm version](https://img.shields.io/npm/v/1panel-mcp.svg)](https://www.npmjs.com/package/1panel-mcp)
+[![npm version](https://img.shields.io/npm/v/1panel-mcp-server.svg)](https://www.npmjs.com/package/1panel-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 MCP (Model Context Protocol) server for 1Panel - Manage your 1Panel through AI agents like Claude, Cursor, or any MCP-compatible client.
@@ -29,13 +29,13 @@ MCP (Model Context Protocol) server for 1Panel - Manage your 1Panel through AI a
 ### Global Installation (Recommended)
 
 ```bash
-npm install -g 1panel-mcp
+npm install -g 1panel-mcp-server
 ```
 
 ### Local Installation
 
 ```bash
-npm install 1panel-mcp
+npm install 1panel-mcp-server
 ```
 
 ## Usage
@@ -54,22 +54,29 @@ npm install 1panel-mcp
 export ONEPANEL_API_KEY=your-api-key
 export ONEPANEL_HOST=localhost
 export ONEPANEL_PORT=8080
-1panel-mcp start
+1panel-mcp-server start
 
 # Using command line options
-1panel-mcp start --host 192.168.1.100 --port 8080 --key your-api-key
+1panel-mcp-server start --host 192.168.1.100 --port 8080 --key your-api-key
 
 # Using HTTPS
-1panel-mcp start --host panel.example.com --secure --key your-api-key
+1panel-mcp-server start --host panel.example.com --secure --key your-api-key
+
+# Using short command
+1pmcp start --key your-api-key
 ```
 
 ### Commands
 
 ```bash
-1panel-mcp --help              # Show help
-1panel-mcp start --help        # Show start options
-1panel-mcp config              # Show configuration guide
-1panel-mcp tools               # List available tools
+1panel-mcp-server --help              # Show help
+1panel-mcp-server start --help        # Show start options
+1panel-mcp-server config              # Show configuration guide
+1panel-mcp-server tools               # List available tools
+
+# Or use short command
+1pmcp --help
+1pmcp start --key your-api-key
 ```
 
 ### Environment Variables
@@ -91,7 +98,7 @@ Add to `claude_desktop_config.json`:
 {
   "mcpServers": {
     "1panel": {
-      "command": "1panel-mcp",
+      "command": "1panel-mcp-server",
       "args": ["start"],
       "env": {
         "ONEPANEL_HOST": "localhost",
@@ -111,7 +118,7 @@ Add to Cursor MCP settings:
 {
   "mcpServers": {
     "1panel": {
-      "command": "1panel-mcp",
+      "command": "1panel-mcp-server",
       "args": ["start", "--host", "localhost", "--port", "8080", "--key", "your-api-key"]
     }
   }
@@ -136,6 +143,10 @@ npm run dev
 
 # Start locally
 npm start
+
+# Or use the CLI
+npm link
+1panel-mcp-server start --key your-api-key
 ```
 
 ## API Coverage
@@ -153,5 +164,5 @@ MIT
 ## Links
 
 - [GitHub](https://github.com/EaveLuo/1panel-mcp)
-- [npm](https://www.npmjs.com/package/1panel-mcp)
+- [npm](https://www.npmjs.com/package/1panel-mcp-server)
 - [1Panel](https://1panel.cn/)

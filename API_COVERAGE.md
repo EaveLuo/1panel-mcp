@@ -56,7 +56,9 @@
 ✅ **开源版**: 100% 完成
 ✅ **专业版**: ~90% 完成 (核心功能已全部实现)
 
-**已推送到**: https://github.com/EaveLuo/1panel-mcp
+**npm 包**: https://www.npmjs.com/package/1panel-mcp-server
+
+**GitHub**: https://github.com/EaveLuo/1panel-mcp
 
 ---
 
