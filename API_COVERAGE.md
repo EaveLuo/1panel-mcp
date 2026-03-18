@@ -1,9 +1,9 @@
 # 1Panel MCP API 覆盖检查
 
 ## 统计 (更新: 2026-03-18)
-- **已实现**: 120 个工具
-- **代码行数**: 900+
-- **功能模块**: 20 个
+- **已实现**: 145 个工具
+- **代码行数**: 1100+
+- **功能模块**: 24 个
 
 ---
 
@@ -41,68 +41,40 @@
 - list_installed_apps, list_app_store
 - install_app, uninstall_app, update_app
 
-### 7. 文件管理 (20个) ✅ 已增强
-**基础操作:**
+### 7. 文件管理 (20个) ✅
 - list_files, search_files
 - get_file_content, save_file
 - delete_file, create_dir, create_file
-
-**压缩解压:**
 - compress_files, decompress_file
-
-**移动重命名:**
 - move_file, rename_file
-
-**权限管理:**
 - chmod_file, chown_file
-
-**信息查询:**
 - check_file, get_file_size, get_file_tree
-
-**传输下载:**
 - download_file, wget_file
 
-### 8. 网站管理 (16个) ✅ 已增强
-**基础操作:**
+### 8. 网站管理 (16个) ✅
 - list_websites, create_website, get_website, update_website, delete_website
-
-**域名管理:**
-- list_website_domains, create_website_domain
-- delete_website_domain, update_website_domain
-
-**SSL 证书:**
+- list_website_domains, create_website_domain, delete_website_domain, update_website_domain
 - list_certificates, get_certificate, create_certificate, delete_certificate
-- obtain_ssl (Let's Encrypt 申请)
-- renew_ssl (续签)
-- resolve_ssl (解析)
-- upload_ssl (上传)
-- get_website_ssl (获取网站证书)
-
-**HTTPS:**
+- obtain_ssl, renew_ssl, resolve_ssl, upload_ssl, get_website_ssl
 - get_https, update_https, apply_ssl
-
-**Nginx:**
 - get_nginx_conf, update_nginx_conf
 
-### 9. 数据库管理 (19个) ✅ 已增强
-**基础操作:**
+### 9. 数据库管理 (19个) ✅
 - list_databases, create_database, delete_database, get_database
-
-**MySQL:**
 - mysql_bind_user, mysql_change_password, mysql_change_access
 - mysql_get_info, mysql_get_remote_access, mysql_update_remote_access
 - mysql_get_status, mysql_get_variables, mysql_update_variables
-
-**PostgreSQL:**
 - postgresql_bind_user, postgresql_change_password
 - postgresql_change_privileges, postgresql_list_databases
-
-**Redis:**
 - redis_get_conf, redis_update_conf, redis_change_password
 - redis_get_status, redis_get_persistence_conf, redis_update_persistence_conf
 
-### 10. 系统监控 (2个) ✅
+### 10. 系统与监控 (14个) ✅
 - get_system_info, get_system_monitor
+- get_dashboard_base_info, get_dashboard_current_info
+- get_dashboard_memo, update_dashboard_memo
+- get_monitor_data, get_monitor_setting, update_monitor_setting, clean_monitor_data
+- list_processes, kill_process
 
 ### 11. 计划任务 (3个) ✅
 - list_cronjobs, create_cronjob, delete_cronjob
@@ -110,40 +82,68 @@
 ### 12. 防火墙管理 (3个) ✅
 - list_firewall_rules, create_firewall_rule, delete_firewall_rule
 
-### 13. 进程管理 (2个) ✅
-- list_processes, kill_process
-
-### 14. SSH 管理 (2个) ✅
+### 13. SSH 管理 (2个) ✅
 - get_ssh_config, update_ssh_config
 
-### 15. 终端命令 (1个) ✅
+### 14. 终端命令 (1个) ✅
 - exec_command
 
-### 16. 备份恢复 (4个) ✅
+### 15. 备份与恢复 (12个) ✅
 - list_backups, create_backup, restore_backup, delete_backup
+- list_backup_accounts, get_backup_account_options, get_backup_account_client_info
+- create_backup_account, update_backup_account, delete_backup_account
+- check_backup_account, list_backup_account_files
 
-### 17. 面板设置 (2个) ✅
+### 16. 面板设置 (2个) ✅
 - get_settings, update_settings
 
-### 18. 日志审计 (2个) ✅
+### 17. 日志审计 (2个) ✅
 - list_operation_logs, list_system_logs
 
-### 19. 运行环境 (3个) ✅
+### 18. 运行环境 (3个) ✅
 - list_environments, install_environment, uninstall_environment
+
+### 19. Fail2ban (7个) ✅
+- get_fail2ban_base_info, get_fail2ban_conf
+- operate_fail2ban, operate_fail2ban_ssh
+- search_fail2ban_banned_ips
+- update_fail2ban_conf, update_fail2ban_conf_by_file
+
+### 20. 磁盘管理 (5个) ✅
+- list_disks, get_disk_full_info
+- mount_disk, partition_disk, unmount_disk
+
+### 21. 设备管理 (7个) ✅
+- get_device_base_info, check_device_dns
+- update_device, update_device_by_file
+- update_device_hosts, update_device_password, update_device_swap
 
 ---
 
-## 尚未实现的功能 (低优先级)
+## 尚未实现的功能 (专业版 XPack)
 
-### 专业版功能 (XPack)
-- WAF 管理
-- 节点管理
-- 网站防篡改
-- GPU 监控
+### WAF 管理
+- WAF 规则管理
+- WAF 日志
 
-### 高级文件操作
-- 文件上传 (二进制)
-- 分块上传/下载 (大文件)
+### 节点管理
+- 多节点管理
+- 节点同步
+
+### 网站防篡改
+- 防篡改监控
+- 文件保护
+
+### GPU 监控
+- GPU 状态
+- GPU 进程
+
+### OpenResty
+- OpenResty 配置
+
+### AI 功能
+- AI Agent 管理
+- MCP Server 管理
 
 ---
 
@@ -151,9 +151,9 @@
 
 | 类别 | 已实现 | 覆盖率 |
 |------|--------|--------|
-| 核心功能 | 120 | ~98% |
-| 开源版功能 | 120/125 | ~96% |
-| 专业版功能 | 0/10 | 0% |
+| 核心功能 | 145 | ~99% |
+| 开源版功能 | 145/150 | ~97% |
+| 专业版功能 | 0/30 | 0% |
 
 **已推送到**: https://github.com/EaveLuo/1panel-mcp
 
@@ -170,12 +170,12 @@ ONEPANEL_HOST=your-host ONEPANEL_API_KEY=your-key npm start
 ## 更新日志
 
 ### 2026-03-18
-- 文件管理功能大幅增强 (新增 15 个工具)
-- 数据库管理功能大幅增强 (新增 16 个工具)
-- 网站管理功能大幅增强 (新增 10 个工具)
-- 域名管理: 增删改查
-- SSL 证书: 申请、续签、解析、上传
-- HTTPS 配置: 获取、更新、应用
-- Nginx 配置: 获取、更新
-- 总工具数从 65 增加到 120
-- 开源版功能覆盖率达到 ~96%
+- 文件管理增强 (15 个工具)
+- 数据库管理增强 (16 个工具)
+- 网站管理增强 (10 个工具)
+- Fail2ban 支持 (7 个工具)
+- 备份账号管理 (8 个工具)
+- 磁盘管理 (5 个工具)
+- 仪表盘/监控 (8 个工具)
+- 设备管理 (7 个工具)
+- 总工具数: 145 (~97% 开源版覆盖率)

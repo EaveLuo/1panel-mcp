@@ -16,9 +16,15 @@ import {
   SSHAPI,
   TerminalAPI,
   BackupAPI,
+  BackupAccountAPI,
   SettingsAPI,
   LogsAPI,
   RuntimeAPI,
+  Fail2BanAPI,
+  DiskAPI,
+  DashboardAPI,
+  MonitorAPI,
+  DeviceAPI,
 } from "./api/index.js";
 
 export class OnePanelClient {
@@ -41,9 +47,15 @@ export class OnePanelClient {
   public ssh: SSHAPI;
   public terminal: TerminalAPI;
   public backup: BackupAPI;
+  public backupAccount: BackupAccountAPI;
   public settings: SettingsAPI;
   public logs: LogsAPI;
   public runtime: RuntimeAPI;
+  public fail2ban: Fail2BanAPI;
+  public disk: DiskAPI;
+  public dashboard: DashboardAPI;
+  public monitor: MonitorAPI;
+  public device: DeviceAPI;
 
   constructor(config: OnePanelConfig) {
     this.config = { protocol: "http", ...config };
@@ -65,9 +77,15 @@ export class OnePanelClient {
     this.ssh = new SSHAPI(this.config);
     this.terminal = new TerminalAPI(this.config);
     this.backup = new BackupAPI(this.config);
+    this.backupAccount = new BackupAccountAPI(this.config);
     this.settings = new SettingsAPI(this.config);
     this.logs = new LogsAPI(this.config);
     this.runtime = new RuntimeAPI(this.config);
+    this.fail2ban = new Fail2BanAPI(this.config);
+    this.disk = new DiskAPI(this.config);
+    this.dashboard = new DashboardAPI(this.config);
+    this.monitor = new MonitorAPI(this.config);
+    this.device = new DeviceAPI(this.config);
   }
 
   // Backward compatibility - delegate to modules
@@ -253,6 +271,16 @@ export class OnePanelClient {
   restoreBackup = (id: number) => this.backup.restore(id);
   deleteBackup = (id: number) => this.backup.remove(id);
 
+  // Backup Account
+  listBackupAccounts = () => this.backupAccount.list();
+  getBackupAccountOptions = () => this.backupAccount.getOptions();
+  getBackupAccountClientInfo = (clientType: string) => this.backupAccount.getClientInfo(clientType);
+  createBackupAccount = (params: any) => this.backupAccount.create(params);
+  updateBackupAccount = (params: any) => this.backupAccount.update(params);
+  deleteBackupAccount = (params: any) => this.backupAccount.delete(params);
+  checkBackupAccount = (params: any) => this.backupAccount.check(params);
+  listBackupAccountFiles = (backupAccountID: number, path?: string) => this.backupAccount.listFiles(backupAccountID, path);
+
   // Settings
   getSettings = () => this.settings.getSettings();
   updateSettings = (settings: any) => this.settings.update(settings);
@@ -265,6 +293,43 @@ export class OnePanelClient {
   listEnvironments = (type: string) => this.runtime.list(type);
   installEnvironment = (type: string, config: any) => this.runtime.install(type, config);
   uninstallEnvironment = (type: string, id: number) => this.runtime.uninstall(type, id);
+
+  // Fail2ban
+  getFail2BanBaseInfo = () => this.fail2ban.getBaseInfo();
+  getFail2BanConf = () => this.fail2ban.getConf();
+  operateFail2Ban = (params: any) => this.fail2ban.operate(params);
+  operateFail2BanSSH = (params: any) => this.fail2ban.operateSSH(params);
+  searchFail2BanBannedIPs = (params?: any) => this.fail2ban.searchBannedIPs(params);
+  updateFail2BanConf = (params: any) => this.fail2ban.updateConf(params);
+  updateFail2BanConfByFile = (content: string) => this.fail2ban.updateConfByFile(content);
+
+  // Disk
+  listDisks = () => this.disk.list();
+  getDiskFullInfo = () => this.disk.getFullInfo();
+  mountDisk = (params: any) => this.disk.mount(params);
+  partitionDisk = (params: any) => this.disk.partition(params);
+  unmountDisk = (mountPoint: string) => this.disk.unmount(mountPoint);
+
+  // Dashboard
+  getDashboardBaseInfo = () => this.dashboard.getBaseInfo();
+  getDashboardCurrentInfo = () => this.dashboard.getCurrentInfo();
+  getDashboardMemo = () => this.dashboard.getMemo();
+  updateDashboardMemo = (content: string) => this.dashboard.updateMemo(content);
+
+  // Monitor
+  getMonitorData = (params?: any) => this.monitor.getData(params);
+  getMonitorSetting = () => this.monitor.getSetting();
+  updateMonitorSetting = (setting: any) => this.monitor.updateSetting(setting);
+  cleanMonitorData = () => this.monitor.cleanData();
+
+  // Device
+  getDeviceBaseInfo = () => this.device.getBaseInfo();
+  checkDeviceDNS = () => this.device.checkDNS();
+  updateDevice = (conf: any) => this.device.update(conf);
+  updateDeviceByFile = (content: string) => this.device.updateByFile(content);
+  updateDeviceHosts = (hosts: string) => this.device.updateHosts(hosts);
+  updateDevicePassword = (oldPass: string, newPass: string) => this.device.updatePassword(oldPass, newPass);
+  updateDeviceSwap = (swap: any) => this.device.updateSwap(swap);
 }
 
 export { OnePanelConfig } from "./types/config.js";

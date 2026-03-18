@@ -179,6 +179,15 @@ const tools = [
     { name: "create_backup", description: "Create backup", inputSchema: { type: "object", properties: { backup: { type: "object" } }, required: ["backup"] } },
     { name: "restore_backup", description: "Restore backup", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
     { name: "delete_backup", description: "Delete backup", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
+    // Backup Account
+    { name: "list_backup_accounts", description: "List backup accounts", inputSchema: { type: "object", properties: {} } },
+    { name: "get_backup_account_options", description: "Get backup account options", inputSchema: { type: "object", properties: {} } },
+    { name: "get_backup_account_client_info", description: "Get backup account client info", inputSchema: { type: "object", properties: { clientType: { type: "string" } }, required: ["clientType"] } },
+    { name: "create_backup_account", description: "Create backup account", inputSchema: { type: "object", properties: { type: { type: "string" }, name: { type: "string" }, vars: { type: "object" }, isDefault: { type: "boolean" } }, required: ["type", "name", "vars"] } },
+    { name: "update_backup_account", description: "Update backup account", inputSchema: { type: "object", properties: { type: { type: "string" }, name: { type: "string" }, vars: { type: "object" }, isDefault: { type: "boolean" } }, required: ["type", "name", "vars"] } },
+    { name: "delete_backup_account", description: "Delete backup account", inputSchema: { type: "object", properties: { type: { type: "string" }, name: { type: "string" } }, required: ["type"] } },
+    { name: "check_backup_account", description: "Check backup account", inputSchema: { type: "object", properties: { type: { type: "string" }, vars: { type: "object" } }, required: ["type", "vars"] } },
+    { name: "list_backup_account_files", description: "List files in backup account", inputSchema: { type: "object", properties: { backupAccountID: { type: "number" }, path: { type: "string" } }, required: ["backupAccountID"] } },
     // Settings
     { name: "get_settings", description: "Get settings", inputSchema: { type: "object", properties: {} } },
     { name: "update_settings", description: "Update settings", inputSchema: { type: "object", properties: { settings: { type: "object" } }, required: ["settings"] } },
@@ -189,6 +198,38 @@ const tools = [
     { name: "list_environments", description: "List environments", inputSchema: { type: "object", properties: { type: { type: "string" } }, required: ["type"] } },
     { name: "install_environment", description: "Install environment", inputSchema: { type: "object", properties: { type: { type: "string" }, config: { type: "object" } }, required: ["type", "config"] } },
     { name: "uninstall_environment", description: "Uninstall environment", inputSchema: { type: "object", properties: { type: { type: "string" }, id: { type: "number" } }, required: ["type", "id"] } },
+    // Fail2ban
+    { name: "get_fail2ban_base_info", description: "Get Fail2ban base info", inputSchema: { type: "object", properties: {} } },
+    { name: "get_fail2ban_conf", description: "Get Fail2ban configuration", inputSchema: { type: "object", properties: {} } },
+    { name: "operate_fail2ban", description: "Operate Fail2ban (start/stop/restart)", inputSchema: { type: "object", properties: { operation: { type: "string", enum: ["start", "stop", "restart"] } }, required: ["operation"] } },
+    { name: "operate_fail2ban_ssh", description: "Operate Fail2ban SSH (start/stop/restart)", inputSchema: { type: "object", properties: { operation: { type: "string", enum: ["start", "stop", "restart"] } }, required: ["operation"] } },
+    { name: "search_fail2ban_banned_ips", description: "Search banned IPs in Fail2ban", inputSchema: { type: "object", properties: { page: { type: "number" }, pageSize: { type: "number" } } } },
+    { name: "update_fail2ban_conf", description: "Update Fail2ban configuration", inputSchema: { type: "object", properties: { key: { type: "string" }, value: { type: "string" } }, required: ["key", "value"] } },
+    { name: "update_fail2ban_conf_by_file", description: "Update Fail2ban configuration by file content", inputSchema: { type: "object", properties: { content: { type: "string" } }, required: ["content"] } },
+    // Disk
+    { name: "list_disks", description: "List disks", inputSchema: { type: "object", properties: {} } },
+    { name: "get_disk_full_info", description: "Get full disk information", inputSchema: { type: "object", properties: {} } },
+    { name: "mount_disk", description: "Mount disk", inputSchema: { type: "object", properties: { path: { type: "string" }, mountPoint: { type: "string" }, fsType: { type: "string" }, options: { type: "string" } }, required: ["path", "mountPoint"] } },
+    { name: "partition_disk", description: "Partition disk", inputSchema: { type: "object", properties: { path: { type: "string" }, type: { type: "string" } }, required: ["path"] } },
+    { name: "unmount_disk", description: "Unmount disk", inputSchema: { type: "object", properties: { mountPoint: { type: "string" } }, required: ["mountPoint"] } },
+    // Dashboard
+    { name: "get_dashboard_base_info", description: "Get dashboard base info", inputSchema: { type: "object", properties: {} } },
+    { name: "get_dashboard_current_info", description: "Get dashboard current info", inputSchema: { type: "object", properties: {} } },
+    { name: "get_dashboard_memo", description: "Get dashboard memo", inputSchema: { type: "object", properties: {} } },
+    { name: "update_dashboard_memo", description: "Update dashboard memo", inputSchema: { type: "object", properties: { content: { type: "string" } }, required: ["content"] } },
+    // Monitor
+    { name: "get_monitor_data", description: "Get monitor data", inputSchema: { type: "object", properties: { startTime: { type: "string" }, endTime: { type: "string" } } } },
+    { name: "get_monitor_setting", description: "Get monitor setting", inputSchema: { type: "object", properties: {} } },
+    { name: "update_monitor_setting", description: "Update monitor setting", inputSchema: { type: "object", properties: { setting: { type: "object" } }, required: ["setting"] } },
+    { name: "clean_monitor_data", description: "Clean monitor data", inputSchema: { type: "object", properties: {} } },
+    // Device
+    { name: "get_device_base_info", description: "Get device base info", inputSchema: { type: "object", properties: {} } },
+    { name: "check_device_dns", description: "Check device DNS", inputSchema: { type: "object", properties: {} } },
+    { name: "update_device", description: "Update device configuration", inputSchema: { type: "object", properties: { conf: { type: "object" } }, required: ["conf"] } },
+    { name: "update_device_by_file", description: "Update device configuration by file", inputSchema: { type: "object", properties: { content: { type: "string" } }, required: ["content"] } },
+    { name: "update_device_hosts", description: "Update device hosts", inputSchema: { type: "object", properties: { hosts: { type: "string" } }, required: ["hosts"] } },
+    { name: "update_device_password", description: "Update device password", inputSchema: { type: "object", properties: { oldPass: { type: "string" }, newPass: { type: "string" } }, required: ["oldPass", "newPass"] } },
+    { name: "update_device_swap", description: "Update device swap", inputSchema: { type: "object", properties: { swap: { type: "object" } }, required: ["swap"] } },
 ];
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -629,6 +670,31 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             case "delete_backup":
                 result = await client.deleteBackup(args?.id);
                 break;
+            // Backup Account
+            case "list_backup_accounts":
+                result = await client.listBackupAccounts();
+                break;
+            case "get_backup_account_options":
+                result = await client.getBackupAccountOptions();
+                break;
+            case "get_backup_account_client_info":
+                result = await client.getBackupAccountClientInfo(args?.clientType);
+                break;
+            case "create_backup_account":
+                result = await client.createBackupAccount(args);
+                break;
+            case "update_backup_account":
+                result = await client.updateBackupAccount(args);
+                break;
+            case "delete_backup_account":
+                result = await client.deleteBackupAccount(args);
+                break;
+            case "check_backup_account":
+                result = await client.checkBackupAccount(args);
+                break;
+            case "list_backup_account_files":
+                result = await client.listBackupAccountFiles(args?.backupAccountID, args?.path);
+                break;
             // Settings
             case "get_settings":
                 result = await client.getSettings();
@@ -652,6 +718,92 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 break;
             case "uninstall_environment":
                 result = await client.uninstallEnvironment(args?.type, args?.id);
+                break;
+            // Fail2ban
+            case "get_fail2ban_base_info":
+                result = await client.getFail2BanBaseInfo();
+                break;
+            case "get_fail2ban_conf":
+                result = await client.getFail2BanConf();
+                break;
+            case "operate_fail2ban":
+                result = await client.operateFail2Ban(args);
+                break;
+            case "operate_fail2ban_ssh":
+                result = await client.operateFail2BanSSH(args);
+                break;
+            case "search_fail2ban_banned_ips":
+                result = await client.searchFail2BanBannedIPs(args);
+                break;
+            case "update_fail2ban_conf":
+                result = await client.updateFail2BanConf(args);
+                break;
+            case "update_fail2ban_conf_by_file":
+                result = await client.updateFail2BanConfByFile(args?.content);
+                break;
+            // Disk
+            case "list_disks":
+                result = await client.listDisks();
+                break;
+            case "get_disk_full_info":
+                result = await client.getDiskFullInfo();
+                break;
+            case "mount_disk":
+                result = await client.mountDisk(args);
+                break;
+            case "partition_disk":
+                result = await client.partitionDisk(args);
+                break;
+            case "unmount_disk":
+                result = await client.unmountDisk(args?.mountPoint);
+                break;
+            // Dashboard
+            case "get_dashboard_base_info":
+                result = await client.getDashboardBaseInfo();
+                break;
+            case "get_dashboard_current_info":
+                result = await client.getDashboardCurrentInfo();
+                break;
+            case "get_dashboard_memo":
+                result = await client.getDashboardMemo();
+                break;
+            case "update_dashboard_memo":
+                result = await client.updateDashboardMemo(args?.content);
+                break;
+            // Monitor
+            case "get_monitor_data":
+                result = await client.getMonitorData(args);
+                break;
+            case "get_monitor_setting":
+                result = await client.getMonitorSetting();
+                break;
+            case "update_monitor_setting":
+                result = await client.updateMonitorSetting(args?.setting);
+                break;
+            case "clean_monitor_data":
+                result = await client.cleanMonitorData();
+                break;
+            // Device
+            case "get_device_base_info":
+                result = await client.getDeviceBaseInfo();
+                break;
+            case "check_device_dns":
+                result = await client.checkDeviceDNS();
+                break;
+            case "update_device":
+                result = await client.updateDevice(args?.conf);
+                break;
+            case "update_device_by_file":
+                result = await client.updateDeviceByFile(args?.content);
+                break;
+            case "update_device_hosts":
+                result = await client.updateDeviceHosts(args?.hosts);
+                break;
+            case "update_device_password":
+                result = await client.updateDevicePassword(args?.oldPass, args?.newPass);
+                break;
+            case "update_device_swap":
+                result = await client.updateDeviceSwap(args?.swap);
                 break;
             default: throw new Error(`Unknown tool: ${name}`);
         }
