@@ -25,6 +25,10 @@ import {
   DashboardAPI,
   MonitorAPI,
   DeviceAPI,
+  FTPAPI,
+  ClamAPI,
+  PHPAPI,
+  HostAPI,
 } from "./api/index.js";
 
 export class OnePanelClient {
@@ -56,6 +60,10 @@ export class OnePanelClient {
   public dashboard: DashboardAPI;
   public monitor: MonitorAPI;
   public device: DeviceAPI;
+  public ftp: FTPAPI;
+  public clam: ClamAPI;
+  public php: PHPAPI;
+  public host: HostAPI;
 
   constructor(config: OnePanelConfig) {
     this.config = { protocol: "http", ...config };
@@ -86,6 +94,10 @@ export class OnePanelClient {
     this.dashboard = new DashboardAPI(this.config);
     this.monitor = new MonitorAPI(this.config);
     this.device = new DeviceAPI(this.config);
+    this.ftp = new FTPAPI(this.config);
+    this.clam = new ClamAPI(this.config);
+    this.php = new PHPAPI(this.config);
+    this.host = new HostAPI(this.config);
   }
 
   // Backward compatibility - delegate to modules
@@ -330,6 +342,62 @@ export class OnePanelClient {
   updateDeviceHosts = (hosts: string) => this.device.updateHosts(hosts);
   updateDevicePassword = (oldPass: string, newPass: string) => this.device.updatePassword(oldPass, newPass);
   updateDeviceSwap = (swap: any) => this.device.updateSwap(swap);
+
+  // FTP
+  listFTPUsers = () => this.ftp.list();
+  getFTPBaseInfo = () => this.ftp.getBaseInfo();
+  createFTPUser = (params: any) => this.ftp.create(params);
+  updateFTPUser = (params: any) => this.ftp.update(params);
+  deleteFTPUser = (id: number) => this.ftp.remove(id);
+  operateFTP = (operation: "start" | "stop" | "restart") => this.ftp.operate(operation);
+  syncFTPUsers = () => this.ftp.sync();
+  getFTPLogs = () => this.ftp.getLogs();
+
+  // ClamAV
+  listClamConfigs = () => this.clam.list();
+  getClamBaseInfo = () => this.clam.getBaseInfo();
+  createClamConfig = (params: any) => this.clam.create(params);
+  updateClamConfig = (params: any) => this.clam.update(params);
+  deleteClamConfig = (id: number) => this.clam.remove(id);
+  getClamFile = () => this.clam.getFile();
+  updateClamFile = (content: string) => this.clam.updateFile(content);
+  scanClam = (id: number) => this.clam.scan(id);
+  getClamRecords = () => this.clam.getRecords();
+  cleanClamRecords = () => this.clam.cleanRecords();
+  updateClamStatus = (status: string) => this.clam.updateStatus(status);
+
+  // PHP
+  listPHPRuntimes = () => this.php.list();
+  getPHPConf = (id: number) => this.php.getConf(id);
+  updatePHPConf = (id: number, content: string) => this.php.updateConf(id, content);
+  listPHPExtensions = (id: number) => this.php.listExtensions(id);
+  installPHPExtension = (id: number, extension: string) => this.php.installExtension(id, extension);
+  uninstallPHPExtension = (id: number, extension: string) => this.php.uninstallExtension(id, extension);
+  getPHPConfFile = (id: number, type: string) => this.php.getConfFile(id, type);
+  updatePHPConfFile = (id: number, type: string, content: string) => this.php.updateConfFile(id, type, content);
+  updatePHPVersion = (id: number, version: string) => this.php.updateVersion(id, version);
+
+  // Host
+  listHosts = () => this.host.list();
+  getHost = (id: number) => this.host.getHost(id);
+  createHost = (params: any) => this.host.create(params);
+  updateHost = (params: any) => this.host.update(params);
+  deleteHost = (id: number) => this.host.remove(id);
+  testHostConnection = (id: number) => this.host.testConnection(id);
+  testHostConnectionByInfo = (params: any) => this.host.testConnectionByInfo(params);
+  getHostTree = () => this.host.getTree();
+  updateHostGroup = (id: number, groupID: number) => this.host.updateHostGroup(id, groupID);
+  listHostGroups = () => this.host.listHostGroups();
+  createHostGroup = (params: any) => this.host.createHostGroup(params);
+  updateHostGroupByID = (params: any) => this.host.updateHostGroupByID(params);
+  deleteHostGroup = (id: number) => this.host.deleteHostGroup(id);
+  generateHostSSHKey = (id: number) => this.host.generateSSHKey(id);
+  getHostSSHKey = (id: number) => this.host.getSSHKey(id);
+  deleteHostSSHKey = (id: number) => this.host.deleteSSHKey(id);
+  syncHostSSHKey = (id: number) => this.host.syncSSHKey(id);
+  updateHostSSHKey = (id: number, authMode: string, password?: string, privateKey?: string) => this.host.updateSSHKey(id, authMode, password, privateKey);
+  getHostSSHConf = () => this.host.getSSHConf();
+  getHostSSHLogs = () => this.host.getSSHLogs();
 }
 
 export { OnePanelConfig } from "./types/config.js";

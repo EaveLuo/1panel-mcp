@@ -24,3 +24,7 @@ export { DiskAPI } from "./disk.js";
 export { DashboardAPI } from "./dashboard.js";
 export { MonitorAPI } from "./monitor.js";
 export { DeviceAPI } from "./device.js";
+export { FTPAPI } from "./ftp.js";
+export { ClamAPI } from "./clam.js";
+export { PHPAPI } from "./php.js";
+export { HostAPI } from "./host.js";
