@@ -1,177 +1,220 @@
-import { createHash } from "crypto";
-
-export interface Config {
-  host: string;
-  port: number;
-  apiKey: string;
-  protocol?: string;
-}
+import { OnePanelConfig } from "./types/config.js";
+import {
+  ContainerAPI,
+  ImageAPI,
+  NetworkAPI,
+  VolumeAPI,
+  ComposeAPI,
+  AppAPI,
+  WebsiteAPI,
+  FileAPI,
+  DatabaseAPI,
+  SystemAPI,
+  CronjobAPI,
+  FirewallAPI,
+  ProcessAPI,
+  SSHAPI,
+  TerminalAPI,
+  BackupAPI,
+  SettingsAPI,
+  LogsAPI,
+  RuntimeAPI,
+} from "./api/index.js";
 
 export class OnePanelClient {
-  private config: Config;
+  private config: OnePanelConfig;
 
-  constructor(config: Config) {
+  // API modules
+  public containers: ContainerAPI;
+  public images: ImageAPI;
+  public networks: NetworkAPI;
+  public volumes: VolumeAPI;
+  public composes: ComposeAPI;
+  public apps: AppAPI;
+  public websites: WebsiteAPI;
+  public files: FileAPI;
+  public databases: DatabaseAPI;
+  public system: SystemAPI;
+  public cronjobs: CronjobAPI;
+  public firewall: FirewallAPI;
+  public process: ProcessAPI;
+  public ssh: SSHAPI;
+  public terminal: TerminalAPI;
+  public backup: BackupAPI;
+  public settings: SettingsAPI;
+  public logs: LogsAPI;
+  public runtime: RuntimeAPI;
+
+  constructor(config: OnePanelConfig) {
     this.config = { protocol: "http", ...config };
+
+    // Initialize API modules
+    this.containers = new ContainerAPI(this.config);
+    this.images = new ImageAPI(this.config);
+    this.networks = new NetworkAPI(this.config);
+    this.volumes = new VolumeAPI(this.config);
+    this.composes = new ComposeAPI(this.config);
+    this.apps = new AppAPI(this.config);
+    this.websites = new WebsiteAPI(this.config);
+    this.files = new FileAPI(this.config);
+    this.databases = new DatabaseAPI(this.config);
+    this.system = new SystemAPI(this.config);
+    this.cronjobs = new CronjobAPI(this.config);
+    this.firewall = new FirewallAPI(this.config);
+    this.process = new ProcessAPI(this.config);
+    this.ssh = new SSHAPI(this.config);
+    this.terminal = new TerminalAPI(this.config);
+    this.backup = new BackupAPI(this.config);
+    this.settings = new SettingsAPI(this.config);
+    this.logs = new LogsAPI(this.config);
+    this.runtime = new RuntimeAPI(this.config);
   }
 
-  private generateToken(): { token: string; timestamp: string } {
-    const timestamp = Math.floor(Date.now() / 1000).toString();
-    const token = createHash("md5")
-      .update(`1panel${this.config.apiKey}${timestamp}`)
-      .digest("hex");
-    return { token, timestamp };
-  }
-
-  private async request(path: string, options: RequestInit = {}): Promise<any> {
-    const { token, timestamp } = this.generateToken();
-    const url = `${this.config.protocol}://${this.config.host}:${this.config.port}${path}`;
-
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        "1Panel-Token": token,
-        "1Panel-Timestamp": timestamp,
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`1Panel API error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
+  // Backward compatibility - delegate to modules
   // Containers
-  async listContainers(): Promise<any> { return this.request("/api/v2/containers/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100, state: "all", orderBy: "name", order: "ascending" }) }); }
-  async listContainersSimple(): Promise<any> { return this.request("/api/v2/containers/list", { method: "POST", body: JSON.stringify({}) }); }
-  async getContainer(id: string): Promise<any> { return this.request("/api/v2/containers/info", { method: "POST", body: JSON.stringify({ id }) }); }
-  async inspectContainer(id: string): Promise<any> { return this.request("/api/v2/containers/inspect", { method: "POST", body: JSON.stringify({ id }) }); }
-  async startContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "start" }) }); }
-  async stopContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "stop" }) }); }
-  async restartContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "restart" }) }); }
-  async pauseContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "pause" }) }); }
-  async unpauseContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "unpause" }) }); }
-  async killContainer(id: string): Promise<any> { return this.request("/api/v2/containers/operate", { method: "POST", body: JSON.stringify({ id, operation: "kill" }) }); }
-  async removeContainer(id: string): Promise<any> { return this.request("/api/v2/containers/del", { method: "POST", body: JSON.stringify({ id }) }); }
-  async createContainer(config: any): Promise<any> { return this.request("/api/v2/containers", { method: "POST", body: JSON.stringify(config) }); }
-  async updateContainer(id: string, config: any): Promise<any> { return this.request("/api/v2/containers/update", { method: "POST", body: JSON.stringify({ id, ...config }) }); }
-  async renameContainer(id: string, name: string): Promise<any> { return this.request("/api/v2/containers/rename", { method: "POST", body: JSON.stringify({ id, name }) }); }
-  async upgradeContainer(id: string, image: string): Promise<any> { return this.request("/api/v2/containers/upgrade", { method: "POST", body: JSON.stringify({ id, image }) }); }
-  async getContainerLogs(id: string, tail = 100): Promise<any> { return this.request("/api/v2/containers/search/log", { method: "GET" }); }
-  async getContainerStats(id: string): Promise<any> { return this.request(`/api/v2/containers/stats/${id}`, { method: "GET" }); }
-  async getContainerStatus(): Promise<any> { return this.request("/api/v2/containers/status", { method: "GET" }); }
-  async pruneContainers(): Promise<any> { return this.request("/api/v2/containers/prune", { method: "POST", body: JSON.stringify({}) }); }
-  async cleanContainerLog(id: string): Promise<any> { return this.request("/api/v2/containers/clean/log", { method: "POST", body: JSON.stringify({ id }) }); }
-  async getContainerUsers(name: string): Promise<any> { return this.request("/api/v2/containers/users", { method: "POST", body: JSON.stringify({ name }) }); }
-  async listContainersByImage(image: string): Promise<any> { return this.request("/api/v2/containers/list/byimage", { method: "POST", body: JSON.stringify({ name: image }) }); }
-  async commitContainer(id: string, repo: string, tag: string): Promise<any> { return this.request("/api/v2/containers/commit", { method: "POST", body: JSON.stringify({ id, repo, tag }) }); }
+  listContainers = () => this.containers.list();
+  listContainersSimple = () => this.containers.listSimple();
+  getContainer = (id: string) => this.containers.get(id);
+  inspectContainer = (id: string) => this.containers.inspect(id);
+  startContainer = (id: string) => this.containers.start(id);
+  stopContainer = (id: string) => this.containers.stop(id);
+  restartContainer = (id: string) => this.containers.restart(id);
+  pauseContainer = (id: string) => this.containers.pause(id);
+  unpauseContainer = (id: string) => this.containers.unpause(id);
+  killContainer = (id: string) => this.containers.kill(id);
+  removeContainer = (id: string) => this.containers.remove(id);
+  createContainer = (config: any) => this.containers.create(config);
+  updateContainer = (id: string, config: any) => this.containers.update(id, config);
+  renameContainer = (id: string, name: string) => this.containers.rename(id, name);
+  upgradeContainer = (id: string, image: string) => this.containers.upgrade(id, image);
+  getContainerLogs = (id: string, tail?: number) => this.containers.getLogs(id, tail);
+  getContainerStats = (id: string) => this.containers.getStats(id);
+  getContainerStatus = () => this.containers.getStatus();
+  pruneContainers = () => this.containers.prune();
+  cleanContainerLog = (id: string) => this.containers.cleanLog(id);
+  getContainerUsers = (name: string) => this.containers.getUsers(name);
+  listContainersByImage = (image: string) => this.containers.listByImage(image);
+  commitContainer = (id: string, repo: string, tag: string) => this.containers.commit(id, repo, tag);
 
   // Images
-  async listImages(): Promise<any> { return this.request("/api/v2/containers/image"); }
-  async listAllImages(): Promise<any> { return this.request("/api/v2/containers/image/all"); }
-  async searchImages(): Promise<any> { return this.request("/api/v2/containers/image/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100, orderBy: "name", order: "ascending" }) }); }
-  async pullImage(name: string): Promise<any> { return this.request("/api/v2/containers/image/pull", { method: "POST", body: JSON.stringify({ name }) }); }
-  async pushImage(name: string): Promise<any> { return this.request("/api/v2/containers/image/push", { method: "POST", body: JSON.stringify({ name }) }); }
-  async removeImage(id: string): Promise<any> { return this.request("/api/v2/containers/image/remove", { method: "POST", body: JSON.stringify({ id }) }); }
-  async buildImage(dockerfile: string, name: string, path: string): Promise<any> { return this.request("/api/v2/containers/image/build", { method: "POST", body: JSON.stringify({ dockerfile, name, path }) }); }
-  async tagImage(id: string, repo: string, tag: string): Promise<any> { return this.request("/api/v2/containers/image/tag", { method: "POST", body: JSON.stringify({ id, repo, tag }) }); }
-  async saveImage(names: string[]): Promise<any> { return this.request("/api/v2/containers/image/save", { method: "POST", body: JSON.stringify({ names }) }); }
-  async loadImage(path: string): Promise<any> { return this.request("/api/v2/containers/image/load", { method: "POST", body: JSON.stringify({ path }) }); }
+  listImages = () => this.images.list();
+  listAllImages = () => this.images.listAll();
+  searchImages = () => this.images.search();
+  pullImage = (name: string) => this.images.pull(name);
+  pushImage = (name: string) => this.images.push(name);
+  removeImage = (id: string) => this.images.remove(id);
+  buildImage = (dockerfile: string, name: string, path: string) => this.images.build(dockerfile, name, path);
+  tagImage = (id: string, repo: string, tag: string) => this.images.tag(id, repo, tag);
+  saveImage = (names: string[]) => this.images.save(names);
+  loadImage = (path: string) => this.images.load(path);
 
   // Networks
-  async listNetworks(): Promise<any> { return this.request("/api/v2/containers/network/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async createNetwork(name: string, driver = "bridge"): Promise<any> { return this.request("/api/v2/containers/network", { method: "POST", body: JSON.stringify({ name, driver }) }); }
-  async removeNetwork(id: string): Promise<any> { return this.request("/api/v2/containers/network/del", { method: "POST", body: JSON.stringify({ id }) }); }
+  listNetworks = () => this.networks.list();
+  createNetwork = (name: string, driver?: string) => this.networks.create(name, driver);
+  removeNetwork = (id: string) => this.networks.remove(id);
 
   // Volumes
-  async listVolumes(): Promise<any> { return this.request("/api/v2/containers/volume/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async createVolume(name: string): Promise<any> { return this.request("/api/v2/containers/volume", { method: "POST", body: JSON.stringify({ name }) }); }
-  async removeVolume(id: string): Promise<any> { return this.request("/api/v2/containers/volume/del", { method: "POST", body: JSON.stringify({ id }) }); }
+  listVolumes = () => this.volumes.list();
+  createVolume = (name: string) => this.volumes.create(name);
+  removeVolume = (id: string) => this.volumes.remove(id);
 
   // Compose
-  async listComposes(): Promise<any> { return this.request("/api/v2/containers/compose/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async createCompose(name: string, content: string, path?: string): Promise<any> { return this.request("/api/v2/containers/compose", { method: "POST", body: JSON.stringify({ name, content, path }) }); }
-  async removeCompose(id: number): Promise<any> { return this.request("/api/v2/containers/compose/del", { method: "POST", body: JSON.stringify({ id }) }); }
-  async startCompose(id: number): Promise<any> { return this.request("/api/v2/containers/compose/operate", { method: "POST", body: JSON.stringify({ id, operation: "start" }) }); }
-  async stopCompose(id: number): Promise<any> { return this.request("/api/v2/containers/compose/operate", { method: "POST", body: JSON.stringify({ id, operation: "stop" }) }); }
-  async restartCompose(id: number): Promise<any> { return this.request("/api/v2/containers/compose/operate", { method: "POST", body: JSON.stringify({ id, operation: "restart" }) }); }
-  async updateCompose(id: number, content: string): Promise<any> { return this.request("/api/v2/containers/compose/update", { method: "POST", body: JSON.stringify({ id, content }) }); }
-  async testCompose(content: string): Promise<any> { return this.request("/api/v2/containers/compose/test", { method: "POST", body: JSON.stringify({ content }) }); }
-  async getComposeEnv(id: number): Promise<any> { return this.request("/api/v2/containers/compose/env", { method: "POST", body: JSON.stringify({ id }) }); }
-  async cleanComposeLog(id: number): Promise<any> { return this.request("/api/v2/containers/compose/clean/log", { method: "POST", body: JSON.stringify({ id }) }); }
+  listComposes = () => this.composes.list();
+  createCompose = (name: string, content: string, path?: string) => this.composes.create(name, content, path);
+  removeCompose = (id: number) => this.composes.remove(id);
+  startCompose = (id: number) => this.composes.start(id);
+  stopCompose = (id: number) => this.composes.stop(id);
+  restartCompose = (id: number) => this.composes.restart(id);
+  updateCompose = (id: number, content: string) => this.composes.update(id, content);
+  testCompose = (content: string) => this.composes.test(content);
+  getComposeEnv = (id: number) => this.composes.getEnv(id);
+  cleanComposeLog = (id: number) => this.composes.cleanLog(id);
 
   // Apps
-  async listInstalledApps(): Promise<any> { return this.request("/api/v2/apps/installed/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async listAppStore(): Promise<any> { return this.request("/api/v2/apps/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async installApp(app: any): Promise<any> { return this.request("/api/v2/apps/installed", { method: "POST", body: JSON.stringify(app) }); }
-  async uninstallApp(id: number): Promise<any> { return this.request("/api/v2/apps/installed/del", { method: "POST", body: JSON.stringify({ id }) }); }
-  async updateApp(id: number): Promise<any> { return this.request("/api/v2/apps/installed/upgrade", { method: "POST", body: JSON.stringify({ id }) }); }
-
-  // Files
-  async listFiles(path: string): Promise<any> { return this.request("/api/v2/files/search", { method: "POST", body: JSON.stringify({ path, page: 1, pageSize: 100 }) }); }
-  async getFileContent(path: string): Promise<any> { return this.request("/api/v2/files/content", { method: "POST", body: JSON.stringify({ path }) }); }
-  async saveFile(path: string, content: string): Promise<any> { return this.request("/api/v2/files", { method: "POST", body: JSON.stringify({ path, content }) }); }
-  async deleteFile(path: string): Promise<any> { return this.request("/api/v2/files/del", { method: "POST", body: JSON.stringify({ path }) }); }
-  async createDir(path: string): Promise<any> { return this.request("/api/v2/files/dir", { method: "POST", body: JSON.stringify({ path }) }); }
+  listInstalledApps = () => this.apps.listInstalled();
+  listAppStore = () => this.apps.listStore();
+  installApp = (app: any) => this.apps.install(app);
+  uninstallApp = (id: number) => this.apps.uninstall(id);
+  updateApp = (id: number) => this.apps.update(id);
 
   // Websites
-  async listWebsites(): Promise<any> { return this.request("/api/v2/websites/list"); }
-  async createWebsite(site: any): Promise<any> { return this.request("/api/v2/websites", { method: "POST", body: JSON.stringify(site) }); }
-  async deleteWebsite(id: number): Promise<any> { return this.request("/api/v2/websites/del", { method: "POST", body: JSON.stringify({ id }) }); }
+  listWebsites = () => this.websites.list();
+  createWebsite = (site: any) => this.websites.create(site);
+  deleteWebsite = (id: number) => this.websites.remove(id);
+  listCertificates = () => this.websites.listCertificates();
+  createCertificate = (cert: any) => this.websites.createCertificate(cert);
+  deleteCertificate = (id: number) => this.websites.deleteCertificate(id);
 
-  // Certificates
-  async listCertificates(): Promise<any> { return this.request("/api/v2/websites/ssl/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async createCertificate(cert: any): Promise<any> { return this.request("/api/v2/websites/ssl", { method: "POST", body: JSON.stringify(cert) }); }
-  async deleteCertificate(id: number): Promise<any> { return this.request("/api/v2/websites/ssl/del", { method: "POST", body: JSON.stringify({ id }) }); }
+  // Files
+  listFiles = (path: string, page?: number, pageSize?: number) => this.files.list(path, page, pageSize);
+  searchFiles = (params: any) => this.files.search(params);
+  getFileContent = (path: string) => this.files.getContent(path);
+  saveFile = (path: string, content: string) => this.files.save(path, content);
+  deleteFile = (path: string, forceDelete?: boolean) => this.files.delete(path, forceDelete);
+  createDir = (path: string) => this.files.createDir(path);
+  createFile = (path: string) => this.files.createFile(path);
+  compressFiles = (params: any) => this.files.compress(params);
+  decompressFile = (params: any) => this.files.decompress(params);
+  moveFile = (params: any) => this.files.move(params);
+  renameFile = (params: any) => this.files.rename(params);
+  chmodFile = (params: any) => this.files.chmod(params);
+  chownFile = (params: any) => this.files.chown(params);
+  checkFile = (path: string) => this.files.check(path);
+  getFileSize = (path: string) => this.files.getSize(path);
+  getFileTree = (path: string) => this.files.getTree(path);
+  downloadFile = (path: string) => this.files.download(path);
+  uploadFile = (params: any) => this.files.upload(params);
+  wgetFile = (url: string, path: string, ignoreCertificate?: boolean) => this.files.wget(url, path, ignoreCertificate);
 
   // Databases
-  async listDatabases(type: string): Promise<any> { return this.request(`/api/v2/databases/${type}/search`, { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async createDatabase(type: string, db: any): Promise<any> { return this.request(`/api/v2/databases/${type}`, { method: "POST", body: JSON.stringify(db) }); }
-  async deleteDatabase(type: string, id: number): Promise<any> { return this.request(`/api/v2/databases/${type}/del`, { method: "POST", body: JSON.stringify({ id }) }); }
+  listDatabases = (type: string) => this.databases.list(type);
+  createDatabase = (type: string, db: any) => this.databases.create(type, db);
+  deleteDatabase = (type: string, id: number) => this.databases.remove(type, id);
 
   // System
-  async getSystemInfo(): Promise<any> { return this.request("/api/v2/toolbox/device/base"); }
-  async getSystemMonitor(): Promise<any> { return this.request("/api/v2/toolbox/device/monitor"); }
+  getSystemInfo = () => this.system.getInfo();
+  getSystemMonitor = () => this.system.getMonitor();
 
   // Cronjobs
-  async listCronjobs(): Promise<any> { return this.request("/api/v2/cronjobs/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async createCronjob(job: any): Promise<any> { return this.request("/api/v2/cronjobs", { method: "POST", body: JSON.stringify(job) }); }
-  async deleteCronjob(id: number): Promise<any> { return this.request("/api/v2/cronjobs/del", { method: "POST", body: JSON.stringify({ id }) }); }
+  listCronjobs = () => this.cronjobs.list();
+  createCronjob = (job: any) => this.cronjobs.create(job);
+  deleteCronjob = (id: number) => this.cronjobs.remove(id);
 
   // Firewall
-  async listFirewallRules(): Promise<any> { return this.request("/api/v2/toolbox/firewall/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async createFirewallRule(rule: any): Promise<any> { return this.request("/api/v2/toolbox/firewall", { method: "POST", body: JSON.stringify(rule) }); }
-  async deleteFirewallRule(id: number): Promise<any> { return this.request("/api/v2/toolbox/firewall/del", { method: "POST", body: JSON.stringify({ id }) }); }
+  listFirewallRules = () => this.firewall.listRules();
+  createFirewallRule = (rule: any) => this.firewall.createRule(rule);
+  deleteFirewallRule = (id: number) => this.firewall.removeRule(id);
 
-  // Process Management
-  async listProcesses(): Promise<any> { return this.request("/api/v2/toolbox/process/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async killProcess(pid: number): Promise<any> { return this.request("/api/v2/toolbox/process/kill", { method: "POST", body: JSON.stringify({ pid }) }); }
+  // Process
+  listProcesses = () => this.process.list();
+  killProcess = (pid: number) => this.process.kill(pid);
 
-  // SSH Management
-  async getSSHConfig(): Promise<any> { return this.request("/api/v2/toolbox/ssh", { method: "POST", body: JSON.stringify({}) }); }
-  async updateSSHConfig(config: any): Promise<any> { return this.request("/api/v2/toolbox/ssh", { method: "POST", body: JSON.stringify(config) }); }
+  // SSH
+  getSSHConfig = () => this.ssh.getConfig();
+  updateSSHConfig = (config: any) => this.ssh.updateConfig(config);
 
   // Terminal
-  async execCommand(command: string, cwd?: string): Promise<any> { return this.request("/api/v2/terminal/exec", { method: "POST", body: JSON.stringify({ command, cwd }) }); }
+  execCommand = (command: string, cwd?: string) => this.terminal.execCommand(command, cwd);
 
-  // Backup & Restore
-  async listBackups(): Promise<any> { return this.request("/api/v2/settings/backup/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async createBackup(backup: any): Promise<any> { return this.request("/api/v2/settings/backup", { method: "POST", body: JSON.stringify(backup) }); }
-  async restoreBackup(id: number): Promise<any> { return this.request("/api/v2/settings/backup/restore", { method: "POST", body: JSON.stringify({ id }) }); }
-  async deleteBackup(id: number): Promise<any> { return this.request("/api/v2/settings/backup/del", { method: "POST", body: JSON.stringify({ id }) }); }
+  // Backup
+  listBackups = () => this.backup.list();
+  createBackup = (backup: any) => this.backup.create(backup);
+  restoreBackup = (id: number) => this.backup.restore(id);
+  deleteBackup = (id: number) => this.backup.remove(id);
 
   // Settings
-  async getSettings(): Promise<any> { return this.request("/api/v2/settings", { method: "POST", body: JSON.stringify({}) }); }
-  async updateSettings(settings: any): Promise<any> { return this.request("/api/v2/settings", { method: "POST", body: JSON.stringify(settings) }); }
+  getSettings = () => this.settings.getSettings();
+  updateSettings = (settings: any) => this.settings.update(settings);
 
   // Logs
-  async listOperationLogs(): Promise<any> { return this.request("/api/v2/logs/operation/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async listSystemLogs(): Promise<any> { return this.request("/api/v2/logs/system/search", { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
+  listOperationLogs = () => this.logs.listOperation();
+  listSystemLogs = () => this.logs.listSystem();
 
-  // Runtime Environments
-  async listEnvironments(type: string): Promise<any> { return this.request(`/api/v2/runtimes/${type}/search`, { method: "POST", body: JSON.stringify({ page: 1, pageSize: 100 }) }); }
-  async installEnvironment(type: string, config: any): Promise<any> { return this.request(`/api/v2/runtimes/${type}`, { method: "POST", body: JSON.stringify(config) }); }
-  async uninstallEnvironment(type: string, id: number): Promise<any> { return this.request(`/api/v2/runtimes/${type}/del`, { method: "POST", body: JSON.stringify({ id }) }); }
+  // Runtime
+  listEnvironments = (type: string) => this.runtime.list(type);
+  installEnvironment = (type: string, config: any) => this.runtime.install(type, config);
+  uninstallEnvironment = (type: string, id: number) => this.runtime.uninstall(type, id);
 }
+
+export { OnePanelConfig } from "./types/config.js";
+export type { OnePanelConfig as Config };

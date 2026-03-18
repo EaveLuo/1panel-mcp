@@ -80,12 +80,30 @@ const tools = [
   { name: "install_app", description: "Install app", inputSchema: { type: "object", properties: { app: { type: "object" } }, required: ["app"] } },
   { name: "uninstall_app", description: "Uninstall app", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
   { name: "update_app", description: "Update app", inputSchema: { type: "object", properties: { id: { type: "number" } }, required: ["id"] } },
-  // Files
-  { name: "list_files", description: "List files", inputSchema: { type: "object", properties: { path: { type: "string" } }, required: ["path"] } },
-  { name: "get_file_content", description: "Get file content", inputSchema: { type: "object", properties: { path: { type: "string" } }, required: ["path"] } },
-  { name: "save_file", description: "Save file", inputSchema: { type: "object", properties: { path: { type: "string" }, content: { type: "string" } }, required: ["path", "content"] } },
-  { name: "delete_file", description: "Delete file", inputSchema: { type: "object", properties: { path: { type: "string" } }, required: ["path"] } },
-  { name: "create_dir", description: "Create directory", inputSchema: { type: "object", properties: { path: { type: "string" } }, required: ["path"] } },
+  // Files - Basic
+  { name: "list_files", description: "List files in a directory", inputSchema: { type: "object", properties: { path: { type: "string", description: "Directory path" }, page: { type: "number", description: "Page number (default: 1)" }, pageSize: { type: "number", description: "Items per page (default: 100)" } }, required: ["path"] } },
+  { name: "search_files", description: "Search files with keyword", inputSchema: { type: "object", properties: { path: { type: "string", description: "Search directory path" }, search: { type: "string", description: "Search keyword" }, page: { type: "number" }, pageSize: { type: "number" } }, required: ["path"] } },
+  { name: "get_file_content", description: "Get file content", inputSchema: { type: "object", properties: { path: { type: "string", description: "File path" } }, required: ["path"] } },
+  { name: "save_file", description: "Save file content", inputSchema: { type: "object", properties: { path: { type: "string", description: "File path" }, content: { type: "string", description: "File content" } }, required: ["path", "content"] } },
+  { name: "delete_file", description: "Delete file or directory", inputSchema: { type: "object", properties: { path: { type: "string", description: "Path to delete" }, forceDelete: { type: "boolean", description: "Force delete without confirmation" } }, required: ["path"] } },
+  { name: "create_dir", description: "Create directory", inputSchema: { type: "object", properties: { path: { type: "string", description: "Directory path" } }, required: ["path"] } },
+  { name: "create_file", description: "Create empty file", inputSchema: { type: "object", properties: { path: { type: "string", description: "File path" } }, required: ["path"] } },
+  // Files - Compression
+  { name: "compress_files", description: "Compress files/directories to zip/tar/tar.gz", inputSchema: { type: "object", properties: { files: { type: "array", items: { type: "string" }, description: "Files/directories to compress" }, dst: { type: "string", description: "Destination directory" }, name: { type: "string", description: "Archive name" }, type: { type: "string", enum: ["zip", "tar", "tar.gz"], description: "Compression type" }, replace: { type: "boolean", description: "Replace existing file" }, secret: { type: "string", description: "Password (optional)" } }, required: ["files", "dst", "name", "type"] } },
+  { name: "decompress_file", description: "Decompress zip/tar/tar.gz archive", inputSchema: { type: "object", properties: { path: { type: "string", description: "Archive path" }, dst: { type: "string", description: "Destination directory" }, type: { type: "string", enum: ["zip", "tar", "tar.gz"], description: "Archive type" }, secret: { type: "string", description: "Password (optional)" } }, required: ["path", "dst", "type"] } },
+  // Files - Move/Rename
+  { name: "move_file", description: "Move file/directory to new location", inputSchema: { type: "object", properties: { from: { type: "string", description: "Source path" }, to: { type: "string", description: "Destination path" }, overwrite: { type: "boolean", description: "Overwrite if exists" } }, required: ["from", "to"] } },
+  { name: "rename_file", description: "Rename file/directory", inputSchema: { type: "object", properties: { path: { type: "string", description: "Current path" }, name: { type: "string", description: "New name" } }, required: ["path", "name"] } },
+  // Files - Permissions
+  { name: "chmod_file", description: "Change file/directory permissions (chmod)", inputSchema: { type: "object", properties: { path: { type: "string", description: "File/directory path" }, mode: { type: "string", description: "Permission mode (e.g., 755, 644)" }, sub: { type: "boolean", description: "Apply recursively to subdirectories" } }, required: ["path", "mode"] } },
+  { name: "chown_file", description: "Change file/directory owner (chown)", inputSchema: { type: "object", properties: { path: { type: "string", description: "File/directory path" }, user: { type: "string", description: "Owner user" }, group: { type: "string", description: "Owner group" }, sub: { type: "boolean", description: "Apply recursively to subdirectories" } }, required: ["path", "user", "group"] } },
+  // Files - Info
+  { name: "check_file", description: "Check if file/directory exists", inputSchema: { type: "object", properties: { path: { type: "string", description: "Path to check" } }, required: ["path"] } },
+  { name: "get_file_size", description: "Get file/directory size", inputSchema: { type: "object", properties: { path: { type: "string", description: "Path" } }, required: ["path"] } },
+  { name: "get_file_tree", description: "Get directory tree structure", inputSchema: { type: "object", properties: { path: { type: "string", description: "Directory path" } }, required: ["path"] } },
+  // Files - Transfer
+  { name: "download_file", description: "Get download link for file", inputSchema: { type: "object", properties: { path: { type: "string", description: "File path" } }, required: ["path"] } },
+  { name: "wget_file", description: "Download file from URL to server", inputSchema: { type: "object", properties: { url: { type: "string", description: "File URL" }, path: { type: "string", description: "Save path" }, ignoreCertificate: { type: "boolean", description: "Ignore SSL certificate errors" } }, required: ["url", "path"] } },
   // Websites
   { name: "list_websites", description: "List websites", inputSchema: { type: "object", properties: {} } },
   { name: "create_website", description: "Create website", inputSchema: { type: "object", properties: { site: { type: "object" } }, required: ["site"] } },
@@ -201,12 +219,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "install_app": result = await client.installApp(args?.app); break;
       case "uninstall_app": result = await client.uninstallApp(args?.id as number); break;
       case "update_app": result = await client.updateApp(args?.id as number); break;
-      // Files
-      case "list_files": result = await client.listFiles(args?.path as string); break;
+      // Files - Basic
+      case "list_files": result = await client.listFiles(args?.path as string, args?.page as number, args?.pageSize as number); break;
+      case "search_files": result = await client.searchFiles(args); break;
       case "get_file_content": result = await client.getFileContent(args?.path as string); break;
       case "save_file": result = await client.saveFile(args?.path as string, args?.content as string); break;
-      case "delete_file": result = await client.deleteFile(args?.path as string); break;
+      case "delete_file": result = await client.deleteFile(args?.path as string, args?.forceDelete as boolean); break;
       case "create_dir": result = await client.createDir(args?.path as string); break;
+      case "create_file": result = await client.createFile(args?.path as string); break;
+      // Files - Compression
+      case "compress_files": result = await client.compressFiles(args); break;
+      case "decompress_file": result = await client.decompressFile(args); break;
+      // Files - Move/Rename
+      case "move_file": result = await client.moveFile(args); break;
+      case "rename_file": result = await client.renameFile(args); break;
+      // Files - Permissions
+      case "chmod_file": result = await client.chmodFile(args); break;
+      case "chown_file": result = await client.chownFile(args); break;
+      // Files - Info
+      case "check_file": result = await client.checkFile(args?.path as string); break;
+      case "get_file_size": result = await client.getFileSize(args?.path as string); break;
+      case "get_file_tree": result = await client.getFileTree(args?.path as string); break;
+      // Files - Transfer
+      case "download_file": result = await client.downloadFile(args?.path as string); break;
+      case "wget_file": result = await client.wgetFile(args?.url as string, args?.path as string, args?.ignoreCertificate as boolean); break;
       // Websites
       case "list_websites": result = await client.listWebsites(); break;
       case "create_website": result = await client.createWebsite(args?.site); break;
